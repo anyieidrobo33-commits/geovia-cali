@@ -1,0 +1,55 @@
+name: Integración continua
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  frontend:
+    name: Tipos, pruebas unitarias y compilación
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+        env:
+          VITE_SUPABASE_URL: https://ci.supabase.co
+          VITE_SUPABASE_ANON_KEY: ci
+
+  base-de-datos:
+    name: Migraciones y pruebas de seguridad (PostgreSQL + PostGIS)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: geovia
+    steps:
+      - uses: actions/checkout@v4
+      - name: Base de datos limpia
+        run: PGDATABASE=postgres createdb -T template0 geovia
+      - name: Esquemas simulados de Supabase
+        run: psql -v ON_ERROR_STOP=1 -q -f supabase/tests/local/stub_supabase.sql
+      - name: Migración 001 (esquema y seguridad)
+        run: psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/001_esquema_geovia.sql
+      - name: Migración 002 (datos de demostración)
+        run: psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/002_datos_demostracion.sql
+      - name: Pruebas de reglas y seguridad
+        run: |
+          psql -v ON_ERROR_STOP=1 -f supabase/tests/pruebas_seguridad_y_reglas.sql | tee resultado.txt
+          if grep -q "FALLIDO" resultado.txt; then echo "Hay pruebas fallidas"; exit 1; fi
