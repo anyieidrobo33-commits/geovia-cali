@@ -6,6 +6,14 @@
     <title>GeoVía Cali · Reporte ciudadano de la malla vial</title>
     <meta name="description" content="Prototipo académico para registrar, visualizar y hacer seguimiento a reportes ciudadanos de afectaciones de la malla vial de Santiago de Cali." />
     <meta name="theme-color" content="#003163" />
+    <script>
+      // Aplica el tema antes de pintar para evitar parpadeos
+      try {
+        var t = localStorage.getItem('geovia-tema');
+        var d = t === 'dark' || (t !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = d ? 'dark' : 'light';
+      } catch (e) {}
+    </script>
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />

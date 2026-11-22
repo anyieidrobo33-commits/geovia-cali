@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Camera, History, LifeBuoy, MapPin, Search, Smartphone } from 'lucide-react';
 import { STATUSES } from '../lib/domain';
+import { resetWelcome } from '../components/Welcome';
 import { StatusBadge } from '../components/ui';
 
 const FAQ: { q: string; a: string }[] = [
@@ -16,6 +17,9 @@ const FAQ: { q: string; a: string }[] = [
   { q: '¿Para qué sirve «Yo también lo vi»?', a: 'Es un apoyo: si usted también ha visto ese daño, tóquelo. Los reportes más apoyados suben en la cola de revisión y aparecen en Estadísticas. Puede retirar su apoyo tocando de nuevo. No necesita cuenta.' },
   { q: '¿Qué son las zonas críticas del mapa?', a: 'Es un mapa de calor: resalta en naranja y rojo los lugares donde se concentran más daños, dando más peso a los de severidad alta y a los más apoyados. Actívelo con el botón «Zonas críticas» en el mapa.' },
   { q: '¿Puedo descargar los datos?', a: 'Sí. En Estadísticas → Datos abiertos puede descargar los reportes en GeoJSON (para QGIS o ArcGIS) o CSV (para Excel o Power BI), con licencia CC BY 4.0. Nunca incluyen datos de quien reportó.' },
+  { q: '¿Cómo me entero si un reporte cambia?', a: 'Toque «Seguir» en la ficha del reporte (sus propios reportes se siguen solos). La campanita de arriba mostrará un aviso cuando un revisor cambie el estado o alguien lo actualice desde el sitio. Si lo permite, también le llegará una notificación del celular mientras la app esté abierta.' },
+  { q: '¿Puedo descargar un reporte en PDF?', a: 'Sí. En la ficha de cualquier reporte toque «PDF»: incluye datos, fotos, historial, actualizaciones y un código QR que abre el reporte en línea. En Estadísticas, «Informe PDF» genera un resumen de la ciudad listo para compartir.' },
+  { q: '¿Hay modo oscuro?', a: 'Sí. Por defecto la app sigue el tema de su celular. Con el botón de pantalla/luna/sol del encabezado puede elegir automático, oscuro o claro.' },
   { q: '¿GeoVía Cali repara las vías?', a: 'No. GeoVía Cali organiza y hace visibles los reportes ciudadanos con evidencia y trazabilidad. Para solicitudes oficiales use los canales de la Secretaría de Infraestructura de Cali. Ante una emergencia, llame al 123.' },
   { q: '¿Cómo instalo la app en el celular?', a: 'Android (Chrome): botón «Instalar app» o menú ⋮ → «Instalar aplicación». iPhone (Safari): botón Compartir → «Agregar a pantalla de inicio». El ícono queda junto a sus otras aplicaciones.' },
 ];
@@ -64,6 +68,8 @@ export default function HelpPage() {
           ))}
         </div>
       </section>
+
+      <p><button className="btn" onClick={() => { resetWelcome(); window.location.assign('/'); }}>Ver de nuevo la bienvenida</button></p>
 
       <div className="alert alert-info">
         <Smartphone size={18} />

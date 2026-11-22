@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BarChart3, Clock, Database, Download, FileJson, HandHeart, MapPinned, RefreshCw, ShieldCheck, Wrench } from 'lucide-react';
+import { BarChart3, Clock, Database, Download, FileDown, FileJson, HandHeart, MapPinned, RefreshCw, ShieldCheck, Wrench } from 'lucide-react';
 import { fetchPublicStats, fetchReports, type PublicStats } from '../lib/api';
 import { CATEGORIES, CONDITIONS, SEVERITIES, STATUSES, categoryMeta } from '../lib/domain';
 import { reportsToCsv, downloadText } from '../lib/csv';
@@ -86,6 +86,7 @@ export default function StatsPage() {
   const [s, setS] = useState<PublicStats | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [downloading, setDownloading] = useState<string | null>(null);
+  const [pdfBusy, setPdfBusy] = useState(false);
 
   const load = () => { setError(null); fetchPublicStats().then(setS).catch((e) => setError(friendlyError(e))); };
   useEffect(load, []);
@@ -117,7 +118,14 @@ export default function StatsPage() {
           <h1 className="row" style={{ gap: 10 }}><BarChart3 size={30} />Estadísticas de la ciudad</h1>
           <p>Así va la malla vial de Cali según los reportes ciudadanos. Datos agregados, sin información personal.</p>
         </div>
-        <Link to="/mapa" className="btn"><MapPinned size={18} />Ver zonas críticas</Link>
+        <div className="row">
+          <button className="btn btn-navy" disabled={pdfBusy} onClick={async () => {
+            setPdfBusy(true);
+            try { const { cityPdf } = await import('../lib/pdf'); await cityPdf(s); }
+            catch { toast('No fue posible generar el PDF', 'error'); } finally { setPdfBusy(false); }
+          }}>{pdfBusy ? <Spinner size={16} /> : <FileDown size={18} />}Informe PDF</button>
+          <Link to="/mapa" className="btn"><MapPinned size={18} />Ver zonas críticas</Link>
+        </div>
       </div>
 
       <div className="stats" style={{ marginBottom: 16 }}>

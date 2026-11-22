@@ -5,6 +5,9 @@ import logoPin from '../assets/logo-pin.png';
 import { useAuth } from '../context/AuthContext';
 import { useInstallPrompt, useOnline } from '../hooks/useInstallPrompt';
 import { InstallDialog } from './InstallCard';
+import NotificationBell from './NotificationBell';
+import ThemeToggle from './ThemeToggle';
+import Welcome from './Welcome';
 
 export default function Layout() {
   const { isStaff, user, isAnonymous } = useAuth();
@@ -41,6 +44,8 @@ export default function Layout() {
             {isStaff && <NavLink to="/panel"><LayoutDashboard size={18} />Panel</NavLink>}
           </nav>
           <div className="header-actions">
+            <ThemeToggle />
+            <NotificationBell />
             {!install.installed && (
               <button className="btn btn-sm btn-ghost" onClick={onInstall} title="Instalar GeoVía en este dispositivo">
                 <Smartphone size={18} /> <span className="hide-md">Instalar app</span>
@@ -86,6 +91,7 @@ export default function Layout() {
       </nav>
 
       {showInstall && <InstallDialog onClose={() => setShowInstall(false)} />}
+      <Welcome />
     </div>
   );
 }

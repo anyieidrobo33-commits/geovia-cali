@@ -5,6 +5,10 @@ import '@fontsource-variable/inter';
 import 'leaflet/dist/leaflet.css';
 import './styles/global.css';
 import App from './App';
+import { applyTheme, watchSystemTheme } from './lib/theme';
+
+applyTheme();
+watchSystemTheme();
 
 // Service worker: caché de la aplicación para apertura rápida e instalación como app
 registerSW({ immediate: true });

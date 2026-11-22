@@ -1,7 +1,7 @@
 <p align="center"><img src="../public/icons/icon-192.png" width="88" alt="GeoVía Cali"></p>
 
 <h1 align="center">Manual de usuario · GeoVía Cali</h1>
-<p align="center">Versión 1.3 · Noviembre de 2026</p>
+<p align="center">Versión 1.4 · Noviembre de 2026</p>
 
 GeoVía Cali le permite **reportar daños de las vías de Santiago de Cali** (huecos, grietas, hundimientos, tapas de alcantarilla dañadas y más), **verlos en un mapa** y **hacer seguimiento** a cada reporte con un código. No necesita crear una cuenta.
 
@@ -71,6 +71,10 @@ El ícono de GeoVía aparecerá junto a sus otras aplicaciones. Mantener presion
 ---
 
 ## 3. Pantalla de inicio
+
+> La primera vez que abre la app verá una **bienvenida de 3 pantallas**. Puede omitirla con **Omitir** o la **X**, y volver a verla desde **Ayuda → Ver de nuevo la bienvenida**.
+>
+> **Tema:** el botón de pantalla/luna/sol del encabezado alterna entre **automático** (según su celular), **oscuro** y **claro**.
 
 <table><tr>
 <td width="40%"><img src="img/01-inicio.png" alt="Pantalla de inicio"></td>
@@ -298,6 +302,18 @@ Su ubicación exacta **solo se usa para verificar** que está en el sitio y **no
 - **Compartir**: el botón con el ícono de compartir abre el menú del celular (WhatsApp, Telegram, correo…) con el enlace del reporte.
 - **Zonas críticas**: en el mapa, toque **Zonas críticas** para ver un mapa de calor que resalta en naranja y rojo dónde se concentran los daños. Tóquelo de nuevo para ocultarlo.
 - **Estadísticas** (menú superior o pie de página): tendencia semanal, tipos de daño, barrios más afectados, avance de la verificación, tiempo típico hasta la verificación y los reportes más apoyados. Al final, **Datos abiertos** permite descargar los reportes en **GeoJSON** (QGIS, ArcGIS) o **CSV** (Excel, Power BI), sin datos personales.
+
+### Seguir un reporte y recibir avisos
+
+- En la ficha de un reporte toque **Seguir**. Sus propios reportes y los que actualice se siguen automáticamente.
+- La **campanita** del encabezado muestra un número cuando hay novedades: un cambio de estado (por ejemplo, *pasó a Validado*) o nuevas actualizaciones desde el sitio. Tóquela para ver los avisos e ir al reporte.
+- Si acepta **Activar avisos en este dispositivo**, también recibirá la notificación del sistema mientras la app esté abierta.
+- Los reportes seguidos se guardan en el dispositivo; no necesita cuenta.
+
+### Descargar en PDF
+
+- **Ficha del reporte**: en la ficha toque **PDF**. Incluye datos, fotos, historial de estados, actualizaciones ciudadanas y un **código QR** que abre el reporte en línea.
+- **Informe de la ciudad**: en **Estadísticas** toque **Informe PDF** para obtener los indicadores y gráficas listos para compartir o imprimir.
 
 ---
 

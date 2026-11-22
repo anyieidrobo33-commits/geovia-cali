@@ -4,11 +4,11 @@ Las pruebas combinan tres niveles, tal como lo define la sección 8.4 del docume
 
 | Nivel | Herramienta | Cómo se ejecuta | Resultado esperado |
 |---|---|---|---|
-| Unitarias (frontend) | Vitest — `tests/*.test.ts` | `npm test` (y automáticamente en GitHub Actions) | 36 pruebas aprobadas |
+| Unitarias (frontend) | Vitest — `tests/*.test.ts` | `npm test` (y automáticamente en GitHub Actions) | 41 pruebas aprobadas |
 | Reglas de negocio y seguridad (servidor) | SQL — `supabase/tests/pruebas_seguridad_y_reglas.sql` | SQL Editor de Supabase o GitHub Actions | 27 casos con veredicto APROBADO |
 | Funcionales de extremo a extremo | Manual, en la app publicada y en celular | Tabla de la sección 2 | Diligenciar resultado observado |
 
-> Resultados: **36/36 pruebas unitarias** y **27/27 casos SQL** aprobados (PostgreSQL 16 + PostGIS 3.4 local). En el Supabase de producción (PostgreSQL 17) se ejecutaron los 17 casos base el 22/11/2026: **17/17 APROBADO**.
+> Resultados: **41/41 pruebas unitarias** y **27/27 casos SQL** aprobados (PostgreSQL 16 + PostGIS 3.4 local). En el Supabase de producción (PostgreSQL 17) se ejecutaron los 17 casos base el 22/11/2026: **17/17 APROBADO**.
 
 ## 1. Trazabilidad requisito → prueba automatizada
 
@@ -26,6 +26,7 @@ Las pruebas combinan tres niveles, tal como lo define la sección 8.4 del docume
 | RF10 | TC10 | SQL: transición no permitida, motivo obligatorio, bitácora con autor/rol/fecha |
 | RF11 | TC11 | SQL: actualización a > 150 m, GPS impreciso, actualización válida en el feed, límite por hora; Vitest: *verificación en el sitio* |
 | RF12 | TC12 | SQL: el autor no puede apoyarse; apoyar/quitar actualiza el contador |
+| RF14 | TC14 | Vitest: *Seguimiento · avisos de cambios* (línea base, cambio de estado, nuevas actualizaciones, claves estables) |
 | RF13 | TC13 | SQL: estadísticas públicas sin datos personales; Vitest: GeoJSON sin datos personales y sin rechazados |
 | RNF02 | — | SQL: *Un reporte rechazado deja de ser público*, *Quién apoyó un reporte no es público*, *La ubicación exacta de quien actualiza no es pública*; EXIF eliminado al recomprimir |
 | RNF04 | — | Vitest: contraste ≥ 4.5:1 de colores de categoría |

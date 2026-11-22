@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { MapContainer, Marker, TileLayer } from 'react-leaflet';
-import { ArrowLeft, Camera, Copy, ExternalLink, History, ImageOff, Lock, MapPin, RefreshCw, SearchX, Users, X } from 'lucide-react';
+import { ArrowLeft, Camera, Copy, FileDown, ExternalLink, History, ImageOff, Lock, MapPin, RefreshCw, SearchX, Users, X } from 'lucide-react';
 import {
   fetchHistory, fetchReportByCode, fetchReportCodeById, fetchUpdates, signedPhotoUrls, trackByCode, type ReportUpdate,
   type HistoryEntry, type PublicTracking, type Report,
@@ -14,6 +14,7 @@ import Timeline from '../components/Timeline';
 import ReviewActions from '../components/ReviewActions';
 import SupportButton from '../components/SupportButton';
 import ShareButton from '../components/ShareButton';
+import FollowButton from '../components/FollowButton';
 import { CategoryIcon, CenterState, ConditionBadge, DemoBadge, Spinner, StatusBadge } from '../components/ui';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -30,6 +31,7 @@ export default function ReportDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [zoom, setZoom] = useState<string | null>(null);
   const [updates, setUpdates] = useState<ReportUpdate[]>([]);
+  const [pdfBusy, setPdfBusy] = useState(false);
   const [updatePhotos, setUpdatePhotos] = useState<Record<string, string>>({});
 
   const load = useCallback(async () => {
@@ -103,7 +105,13 @@ export default function ReportDetailPage() {
           {report && isPubliclyVisible(report.status) && (
             <div className="row" style={{ marginTop: 10 }}>
               <SupportButton reportId={report.id} count={report.supports_count ?? 0} size="md" />
+              <FollowButton id={report.id} code={report.code} status={report.status} historyCount={history.length} updatesCount={updates.length} size="md" />
               <ShareButton code={report.code} categoryCode={report.category_code} sector={report.sector} size="md" />
+              <button className="btn" disabled={pdfBusy} onClick={async () => {
+                setPdfBusy(true);
+                try { const { reportPdf } = await import('../lib/pdf'); await reportPdf(report, history, updates, photos, updatePhotos); }
+                catch { toast('No fue posible generar el PDF', 'error'); } finally { setPdfBusy(false); }
+              }}>{pdfBusy ? <Spinner size={16} /> : <FileDown size={18} />}PDF</button>
             </div>
           )}
         </div>

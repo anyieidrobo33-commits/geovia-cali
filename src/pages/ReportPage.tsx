@@ -9,6 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { useOnline } from '../hooks/useInstallPrompt';
 import { fetchNearby, rememberCode, submitReport, uploadPhoto, type NearbyReport } from '../lib/api';
+import { follow } from '../lib/follow';
 import {
   CATEGORIES, DESCRIPTION_MAX, DESCRIPTION_MIN, DUPLICATE_RADIUS_M, MAX_PHOTOS, REFERENCE_MAX, SEVERITIES,
   categoryMeta, isInsideCali, validateDraft, validatePhotoFile, type DraftErrors, type ReportDraft,
@@ -193,6 +194,7 @@ export default function ReportPage() {
         consent: draft.consent,
       });
       rememberCode(res.code);
+      follow(res.id, res.code, { status: 'recibido', history_count: 1, updates_count: 0 });
       localStorage.removeItem(DRAFT_KEY);
       toast('Reporte enviado correctamente');
       navigate(`/confirmacion/${res.code}`, { replace: true });

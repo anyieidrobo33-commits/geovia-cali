@@ -2,6 +2,15 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado semántico.
 
+## [1.4.0] — 2026-11-22
+
+### Agregado
+- **Bienvenida**: 3 pantallas la primera vez que se abre la app (se puede volver a ver desde Ayuda).
+- **Modo oscuro**: automático según el celular o elegido (automático / oscuro / claro), con mapa en tonos oscuros.
+- **Seguir reportes y avisos**: botón «Seguir»; los reportes propios se siguen solos; campanita con cambios de estado y nuevas actualizaciones; notificación del sistema opcional. Migración 007 (`follow_status`).
+- **Informes PDF**: ficha del reporte (datos, fotos, bitácora, actualizaciones y QR) e informe de la ciudad (indicadores y gráficas).
+- 5 pruebas unitarias nuevas (41 en total).
+
 ## [1.3.0] — 2026-11-22
 
 ### Agregado

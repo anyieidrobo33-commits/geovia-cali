@@ -319,3 +319,25 @@ export async function fetchPublicStats(): Promise<PublicStats> {
   if (error) throw error;
   return data as PublicStats;
 }
+
+// ---------------------------------------------------------------------
+// Seguimiento de reportes (notificaciones)
+// ---------------------------------------------------------------------
+export interface FollowSnapshot {
+  id: string;
+  code: string;
+  category_code: CategoryCode;
+  sector: string | null;
+  status: ReportStatus;
+  history_count: number;
+  updates_count: number;
+  last_update_condition: UpdateCondition | null;
+  last_change_at: string;
+}
+
+export async function fetchFollowStatus(ids: string[]): Promise<FollowSnapshot[]> {
+  if (!ids.length) return [];
+  const { data, error } = await supabase.rpc('follow_status', { p_ids: ids });
+  if (error) throw error;
+  return (data ?? []) as FollowSnapshot[];
+}

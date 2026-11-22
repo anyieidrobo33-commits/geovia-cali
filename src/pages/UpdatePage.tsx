@@ -11,6 +11,7 @@ import {
   categoryMeta, checkOnSite, type GpsFix, type UpdateCondition,
 } from '../lib/domain';
 import { friendlyError } from '../lib/supabase';
+import { follow, isFollowing } from '../lib/follow';
 
 const FIX_MAX_AGE_MS = 5 * 60 * 1000;
 
@@ -92,6 +93,7 @@ export default function UpdatePage() {
       const path = await uploadPhoto(u.id, `act-${crypto.randomUUID()}`, shot.blob);
       setSending('Registrando la actualización…');
       await submitUpdate({ reportId: report.id, condition, comment, lat: fix.lat, lng: fix.lng, accuracy: fix.accuracy, photoPath: path, consent });
+      if (!isFollowing(report.id)) follow(report.id, report.code, null);
       toast('¡Gracias! Su actualización ya es visible para la comunidad');
       navigate(`/r/${report.code}#actualizaciones`, { replace: true });
     } catch (e) {

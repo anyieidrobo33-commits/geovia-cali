@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img alt="Versión" src="https://img.shields.io/badge/versión-1.3.0-003163">
+  <img alt="Versión" src="https://img.shields.io/badge/versión-1.4.0-003163">
   <img alt="TRL" src="https://img.shields.io/badge/madurez-TRL%205-2f7a12">
   <img alt="PWA" src="https://img.shields.io/badge/PWA-instalable-fea600">
   <img alt="Licencia" src="https://img.shields.io/badge/licencia-MIT-lightgrey">
@@ -69,6 +69,9 @@ GeoVía Cali es un proyecto de grado de Ingeniería de Sistemas (UNAD), desarrol
 | 📲 | **Instalable** | Ícono en la pantalla de inicio de Android e iPhone, pantalla completa y accesos directos. |
 | 👥 | **Comunidad** | Muro con los últimos daños publicados y las actualizaciones de otros ciudadanos, con foto. |
 | 🔄 | **Actualizar un reporte en el sitio** | Indique si el daño sigue igual, empeoró, mejoró o ya fue reparado. Exige **GPS a ≤ 150 m** del daño (precisión ≤ 100 m) y una **foto con la cámara en vivo**; no admite fotos de galería. La ubicación de quien actualiza no se publica. |
+| 🔔 | **Seguir y avisos** | «Seguir» un reporte (los propios se siguen solos) y campanita con cambios de estado y nuevas actualizaciones; notificación del sistema opcional. |
+| 📄 | **Informes PDF** | Ficha del reporte con fotos, bitácora y código QR; informe de la ciudad con indicadores y gráficas. |
+| 🌙 | **Bienvenida y modo oscuro** | Introducción de 3 pantallas y tema automático, oscuro o claro (mapa incluido). |
 | ❓ | **Centro de ayuda** | Guía rápida, significado de cada estado y preguntas frecuentes dentro de la app. |
 
 ### Para revisores y administración
@@ -187,7 +190,7 @@ geovia-cali/
 ├── supabase/
 │   ├── migrations/       001 esquema y seguridad · 002 demostración (opcional)
 │   │                     003 actualizaciones y comunidad · 004 endurecimiento
-│   │                     005 visibilidad pública · 006 apoyos y estadísticas
+│   │                     005 visibilidad pública · 006 apoyos y estadísticas · 007 seguimiento
 │   ├── seed/reportes_campo/  9 reportes reales de campo (fotos + datos)
 │   └── tests/            Batería SQL de reglas y seguridad
 ├── scripts/              Cargador de reportes de campo
@@ -226,6 +229,7 @@ En **SQL Editor** ejecute, en orden:
 4. `supabase/migrations/004_endurecimiento.sql`: ajustes del asesor de seguridad.
 5. `supabase/migrations/005_visibilidad_publica.sql`: reportes públicos desde la recepción (salvo rechazados).
 6. `supabase/migrations/006_apoyos_y_estadisticas.sql`: apoyos y estadísticas públicas.
+7. `supabase/migrations/007_seguimiento.sql`: estado de reportes seguidos (avisos).
 
 Luego, en **Authentication → Sign In / Providers**, active **Allow anonymous sign-ins**.
 
@@ -285,13 +289,13 @@ Importe el repositorio en Vercel, defina `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANO
 
 | Nivel | Cantidad | Qué verifica |
 |---|---|---|
-| Unitarias (Vitest) | 36 | Validaciones, fotos, matriz de transiciones **sincronizada con el SQL**, catálogo, contraste WCAG ≥ 4.5:1, Haversine, códigos, CSV sin datos personales |
+| Unitarias (Vitest) | 41 | Validaciones, fotos, matriz de transiciones **sincronizada con el SQL**, catálogo, contraste WCAG ≥ 4.5:1, Haversine, códigos, CSV sin datos personales |
 | Reglas y seguridad (SQL) | 27 | Registro válido, validaciones del servidor, fotos ajenas, permisos por rol, RLS (visitante y otro ciudadano), transiciones, motivo obligatorio, bitácora inmutable, duplicados, actualizaciones en el sitio (distancia, precisión GPS, límite, privacidad de la ubicación), visibilidad pública salvo rechazados, apoyos (contador, autor no puede apoyarse, anonimato) y estadísticas públicas |
 | Integración continua | 2 trabajos | GitHub Actions ejecuta ambas baterías en cada cambio, con PostgreSQL + PostGIS reales |
 | Funcionales y usabilidad | TC01–TC10 | En la app publicada y en celulares: **[docs/PLAN_DE_PRUEBAS.md](docs/PLAN_DE_PRUEBAS.md)** |
 
 ```bash
-npm test                                                     # 36 pruebas
+npm test                                                     # 41 pruebas
 # En Supabase → SQL Editor: supabase/tests/pruebas_seguridad_y_reglas.sql   → 27 APROBADO
 ```
 
@@ -331,8 +335,9 @@ Diseñada conforme a la **Ley 1581 de 2012** (protección de datos personales en
 - [x] PWA instalable y uso con conectividad intermitente
 - [x] Reportes reales de campo en Cali
 - [x] Comunidad, actualizaciones en el sitio, apoyos, zonas críticas, estadísticas y datos abiertos
+- [x] Seguir reportes con avisos, informes PDF, bienvenida y modo oscuro
 - [ ] Empaquetado Android con Capacitor (APK/AAB) y publicación en Google Play
-- [ ] Notificaciones de cambio de estado
+- [ ] Notificaciones push con la app cerrada (Web Push con servidor)
 - [ ] Capa oficial de comunas y barrios (Datos Abiertos de Cali)
 - [ ] CAPTCHA invisible para sesiones anónimas y proveedor de mosaicos con clave para alto tráfico
 - [ ] Articulación con procesos institucionales de mantenimiento vial
