@@ -4,8 +4,8 @@ Las pruebas combinan tres niveles, tal como lo define la sección 8.4 del docume
 
 | Nivel | Herramienta | Cómo se ejecuta | Resultado esperado |
 |---|---|---|---|
-| Unitarias (frontend) | Vitest — `tests/*.test.ts` | `npm test` (y automáticamente en GitHub Actions) | 41 pruebas aprobadas |
-| Reglas de negocio y seguridad (servidor) | SQL — `supabase/tests/pruebas_seguridad_y_reglas.sql` | SQL Editor de Supabase o GitHub Actions | 27 casos con veredicto APROBADO |
+| Unitarias (frontend) | Vitest — `tests/*.test.ts` | `npm test` (y automáticamente en GitHub Actions) | 44 pruebas aprobadas |
+| Reglas de negocio y seguridad (servidor) | SQL — `supabase/tests/pruebas_seguridad_y_reglas.sql` | SQL Editor de Supabase o GitHub Actions | 31 casos con veredicto APROBADO |
 | Funcionales de extremo a extremo | Manual, en la app publicada y en celular | Tabla de la sección 2 | Diligenciar resultado observado |
 
 > Resultados: **41/41 pruebas unitarias** y **27/27 casos SQL** aprobados (PostgreSQL 16 + PostGIS 3.4 local). En el Supabase de producción (PostgreSQL 17) se ejecutaron los 17 casos base el 22/11/2026: **17/17 APROBADO**.
@@ -66,5 +66,7 @@ Nueve afectaciones fotografiadas en Cali (comunas 2, 4 y 9) se cargan con `npm r
 | Fotos visibles en la ficha con URL firmada | Correcta (simulación) | |
 
 ## 4. Sesiones de usabilidad (submuestra de 12 participantes)
+
+**Cómo aplicarla:** comparta el enlace `https://geovia-cali.vercel.app/evaluar` (o el código QR que aparece en *Panel → Evaluación*). Cada participante, sin crear cuenta, responde la encuesta diagnóstica de 15 preguntas y, si acepta, realiza las 4 tareas guiadas por una barra inferior que mide el tiempo y pregunta si necesitó ayuda; al final responde la escala SUS. Si varias personas usan el mismo celular, al terminar pulse «Nuevo participante en este dispositivo». Los resultados agregados y el CSV quedan en `/panel/evaluacion` (solo revisores y administradores). Anote la fecha real de aplicación.
 
 Tareas sugeridas (alineadas con la Tabla 12 del documento maestro): T1 reportar un daño con foto, T2 encontrar un reporte en el mapa por barrio, T3 consultar el estado con el código, T4 instalar la app. Registrar por participante: completó sin ayuda (sí/no), tiempo, errores y comentario. Meta: ≥ 85 % de tareas completadas sin asistencia.

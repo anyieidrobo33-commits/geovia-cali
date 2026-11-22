@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FileDown, RefreshCw, Search, Users } from 'lucide-react';
+import { ClipboardCheck, FileDown, RefreshCw, Search, Users } from 'lucide-react';
 import { fetchReports, type Report } from '../lib/api';
 import { reportsToCsv, downloadText } from '../lib/csv';
 import { CATEGORIES, STATUSES, categoryMeta, type ReportStatus } from '../lib/domain';
@@ -76,6 +76,7 @@ export default function PanelPage() {
           <p>Moderación de reportes, trazabilidad e indicadores de la plataforma.</p>
         </div>
         <div className="row">
+          <Link to="/panel/evaluacion" className="btn"><ClipboardCheck size={18} />Evaluación</Link>
           {isAdmin && <Link to="/panel/usuarios" className="btn"><Users size={18} />Usuarios y roles</Link>}
           <button className="btn" onClick={load}><RefreshCw size={18} />Actualizar</button>
           <button className="btn btn-navy" onClick={exportCsv} disabled={!rows.length}><FileDown size={18} />Exportar CSV</button>

@@ -45,7 +45,7 @@ export default function Welcome() {
     let seen = true;
     try { seen = localStorage.getItem(KEY) === '1'; } catch { /* */ }
     // Quien llega por un enlace compartido ve primero el reporte
-    if (!seen && !pathname.startsWith('/r/') && !pathname.startsWith('/confirmacion')) setShow(true);
+    if (!seen && !pathname.startsWith('/r/') && !pathname.startsWith('/confirmacion') && !pathname.startsWith('/evaluar')) setShow(true);
   }, [pathname]);
 
   useEffect(() => { if (show) dialog.current?.focus(); }, [show, i]);

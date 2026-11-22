@@ -7,6 +7,7 @@ import LocationPicker from '../components/LocationPicker';
 import { CategoryIcon, Spinner, StatusBadge } from '../components/ui';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { finishCurrentTask, isPracticeReport } from '../lib/evaluation';
 import { useOnline } from '../hooks/useInstallPrompt';
 import { fetchNearby, rememberCode, submitReport, uploadPhoto, type NearbyReport } from '../lib/api';
 import { follow } from '../lib/follow';
@@ -168,6 +169,13 @@ export default function ReportPage() {
     const e = validateDraft(currentDraft, 'all');
     setErrors(e);
     if (Object.keys(e).length) return;
+    if (isPracticeReport()) {
+      // Evaluación con participantes: se recorre el flujo completo sin publicar el reporte
+      localStorage.removeItem(DRAFT_KEY);
+      finishCurrentTask(true);
+      navigate('/', { replace: true });
+      return;
+    }
     if (!online) { setSubmitError('No hay conexión. Su borrador está guardado; envíelo cuando vuelva la señal (las fotos deben adjuntarse de nuevo si cierra la app).'); return; }
     setSubmitError(null);
     try {
@@ -220,6 +228,9 @@ export default function ReportPage() {
         <h1 ref={headingRef} tabIndex={-1} style={{ outline: 'none' }}>Reportar una afectación</h1>
         <p className="muted" style={{ margin: 0 }}>Paso {step + 1} de 4 · {STEPS[step]}</p>
       </div>
+      {isPracticeReport() && (
+        <div className="alert alert-info"><span><strong>Modo evaluación:</strong> complete todos los pasos como si fuera real. Al enviar, el reporte de práctica no se publica.</span></div>
+      )}
 
       <ol className="progress" aria-label="Progreso del reporte" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
         {STEPS.map((s, i) => (

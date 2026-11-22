@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img alt="Versión" src="https://img.shields.io/badge/versión-1.4.0-003163">
+  <img alt="Versión" src="https://img.shields.io/badge/versión-1.5.0-003163">
   <img alt="TRL" src="https://img.shields.io/badge/madurez-TRL%205-2f7a12">
   <img alt="PWA" src="https://img.shields.io/badge/PWA-instalable-fea600">
   <img alt="Licencia" src="https://img.shields.io/badge/licencia-MIT-lightgrey">
@@ -63,6 +63,7 @@ GeoVía Cali es un proyecto de grado de Ingeniería de Sistemas (UNAD), desarrol
 | 🗺️ | **Mapa público** | Todos los reportes desde que se reciben (borde punteado = sin verificar). Marcadores por tipo (color + ícono + forma), foto en la ventana del marcador, filtros por tipo, estado, fecha y barrio, y vista de lista accesible. |
 | 🔥 | **Zonas críticas** | Mapa de calor que resalta dónde se concentran los daños, ponderado por severidad y apoyos. |
 | 🤝 | **«Yo también lo vi»** | Apoyos ciudadanos de un toque; los más apoyados se priorizan en la revisión. |
+| 📝 | **Evaluación con participantes** | Encuesta de 15 preguntas, 4 tareas guiadas con tiempo y escala SUS en `/evaluar`; resultados agregados y CSV para el equipo en `/panel/evaluacion`. |
 | 📊 | **Estadísticas de la ciudad** | Tendencia semanal, tipos de daño, barrios más afectados, estado de verificación, mediana de horas hasta la verificación y reportes más apoyados. |
 | 🌐 | **Datos abiertos** | Descarga en GeoJSON y CSV (CC BY 4.0) sin datos personales. Compartir reportes por WhatsApp. |
 | 💾 | **Funciona con mala señal** | El borrador se guarda en el dispositivo y la app abre sin conexión. |
@@ -190,7 +191,7 @@ geovia-cali/
 ├── supabase/
 │   ├── migrations/       001 esquema y seguridad · 002 demostración (opcional)
 │   │                     003 actualizaciones y comunidad · 004 endurecimiento
-│   │                     005 visibilidad pública · 006 apoyos y estadísticas · 007 seguimiento
+│   │                     005 visibilidad pública · 006 apoyos y estadísticas · 007 seguimiento · 008 evaluación
 │   ├── seed/reportes_campo/  9 reportes reales de campo (fotos + datos)
 │   └── tests/            Batería SQL de reglas y seguridad
 ├── scripts/              Cargador de reportes de campo
@@ -230,6 +231,7 @@ En **SQL Editor** ejecute, en orden:
 5. `supabase/migrations/005_visibilidad_publica.sql`: reportes públicos desde la recepción (salvo rechazados).
 6. `supabase/migrations/006_apoyos_y_estadisticas.sql`: apoyos y estadísticas públicas.
 7. `supabase/migrations/007_seguimiento.sql`: estado de reportes seguidos (avisos).
+8. `supabase/migrations/008_evaluacion_usabilidad.sql`: evaluación con participantes (encuesta, tareas y SUS).
 
 Luego, en **Authentication → Sign In / Providers**, active **Allow anonymous sign-ins**.
 
@@ -289,14 +291,14 @@ Importe el repositorio en Vercel, defina `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANO
 
 | Nivel | Cantidad | Qué verifica |
 |---|---|---|
-| Unitarias (Vitest) | 41 | Validaciones, fotos, matriz de transiciones **sincronizada con el SQL**, catálogo, contraste WCAG ≥ 4.5:1, Haversine, códigos, CSV sin datos personales |
-| Reglas y seguridad (SQL) | 27 | Registro válido, validaciones del servidor, fotos ajenas, permisos por rol, RLS (visitante y otro ciudadano), transiciones, motivo obligatorio, bitácora inmutable, duplicados, actualizaciones en el sitio (distancia, precisión GPS, límite, privacidad de la ubicación), visibilidad pública salvo rechazados, apoyos (contador, autor no puede apoyarse, anonimato) y estadísticas públicas |
+| Unitarias (Vitest) | 44 | Validaciones, fotos, matriz de transiciones **sincronizada con el SQL**, catálogo, contraste WCAG ≥ 4.5:1, Haversine, códigos, CSV sin datos personales |
+| Reglas y seguridad (SQL) | 31 | Registro válido, validaciones del servidor, fotos ajenas, permisos por rol, RLS (visitante y otro ciudadano), transiciones, motivo obligatorio, bitácora inmutable, duplicados, actualizaciones en el sitio (distancia, precisión GPS, límite, privacidad de la ubicación), visibilidad pública salvo rechazados, apoyos (contador, autor no puede apoyarse, anonimato) estadísticas públicas y evaluación con participantes (SUS, una por sesión, resultados privados) |
 | Integración continua | 2 trabajos | GitHub Actions ejecuta ambas baterías en cada cambio, con PostgreSQL + PostGIS reales |
 | Funcionales y usabilidad | TC01–TC10 | En la app publicada y en celulares: **[docs/PLAN_DE_PRUEBAS.md](docs/PLAN_DE_PRUEBAS.md)** |
 
 ```bash
-npm test                                                     # 41 pruebas
-# En Supabase → SQL Editor: supabase/tests/pruebas_seguridad_y_reglas.sql   → 27 APROBADO
+npm test                                                     # 44 pruebas
+# En Supabase → SQL Editor: supabase/tests/pruebas_seguridad_y_reglas.sql   → 31 APROBADO
 ```
 
 ---

@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BarChart3, Camera, History, Info, MapPin, Map as MapIcon, Plus, Search, ShieldCheck, Users } from 'lucide-react';
+import { BarChart3, Camera, ClipboardCheck, History, Info, MapPin, Map as MapIcon, Plus, Search, ShieldCheck, Users } from 'lucide-react';
 import logoFull from '../assets/logo-full.png';
 import { fetchStats, type Stats } from '../lib/api';
 import { CATEGORIES } from '../lib/domain';
 import { CategoryIcon } from '../components/ui';
 import { InstallCard } from '../components/InstallCard';
+import { loadEval } from '../lib/evaluation';
 
 export default function HomePage() {
   const [stats, setStats] = useState<Stats | null>(null);
@@ -41,6 +42,12 @@ export default function HomePage() {
       </section>
 
       <div className="container">
+        {!['tasks', 'sus', 'done'].includes(loadEval()?.stage ?? '') && (
+          <Link to="/evaluar" className="eval-cta">
+            <ClipboardCheck size={22} />
+            <span><strong>Ayúdenos a evaluar GeoVía Cali</strong><span className="small">Encuesta anónima y prueba de la app · 15 minutos</span></span>
+          </Link>
+        )}
         <section className="section" aria-labelledby="cifras">
           <h2 id="cifras" className="sr-only">Cifras del prototipo</h2>
           <div className="stats">

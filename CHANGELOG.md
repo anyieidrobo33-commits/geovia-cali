@@ -2,6 +2,14 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado semántico.
 
+## [1.5.0] — 2026-11-22
+
+### Agregado
+- **Evaluación con participantes** (`/evaluar`): encuesta diagnóstica de 15 preguntas con consentimiento y filtros, prueba guiada de la app con 4 tareas (reporte de práctica que no se publica, encontrar un reporte en el mapa, consultar un código y revisar estadísticas), barra de tareas con tiempo y pregunta de ayuda, escala SUS de 10 ítems y comentarios. Anónima y sin cuenta.
+- **Resultados de la evaluación** (`/panel/evaluacion`, solo equipo): resumen, tasas de éxito y tiempos por tarea, puntaje SUS, frecuencias por pregunta, respuestas abiertas, código QR del enlace y exportación CSV.
+- Migración 008 (`evaluations`, `submit_evaluation`): una evaluación por sesión, validación en el servidor y cálculo del SUS; solo revisores y administradores leen los resultados.
+- 3 pruebas unitarias (44 en total) y 4 casos SQL (31 en total).
+
 ## [1.4.0] — 2026-11-22
 
 ### Agregado

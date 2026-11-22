@@ -59,6 +59,8 @@ jobs:
         run: psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/006_apoyos_y_estadisticas.sql
       - name: Migración 007 (seguimiento)
         run: psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/007_seguimiento.sql
+      - name: Migración 008 (evaluación con participantes)
+        run: psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/008_evaluacion_usabilidad.sql
       - name: Pruebas de reglas y seguridad
         run: |
           psql -v ON_ERROR_STOP=1 -f supabase/tests/pruebas_seguridad_y_reglas.sql | tee resultado.txt

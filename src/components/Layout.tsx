@@ -8,6 +8,7 @@ import { InstallDialog } from './InstallCard';
 import NotificationBell from './NotificationBell';
 import ThemeToggle from './ThemeToggle';
 import Welcome from './Welcome';
+import EvalBar from './EvalBar';
 
 export default function Layout() {
   const { isStaff, user, isAnonymous } = useAuth();
@@ -75,6 +76,7 @@ export default function Layout() {
             <Link to="/estadisticas">Estadísticas y datos abiertos</Link>
             <Link to="/ayuda">Ayuda</Link>
             <Link to="/acerca">Acerca y privacidad</Link>
+            <Link to="/evaluar">Participar en la evaluación</Link>
             <a href="https://www.cali.gov.co/infraestructura/" target="_blank" rel="noreferrer">Canales oficiales</a>
           </span>
         </div>
@@ -91,6 +93,7 @@ export default function Layout() {
       </nav>
 
       {showInstall && <InstallDialog onClose={() => setShowInstall(false)} />}
+      <EvalBar />
       <Welcome />
     </div>
   );
