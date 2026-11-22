@@ -133,8 +133,27 @@ begin
                              case when v_n > 0 then 'Detectado' else 'No detectado' end,
                              case when v_n > 0 then 'APROBADO' else 'FALLIDO' end]];
 
+    begin
+      perform public.toggle_support(v_report);
+      v_res := v_res || array[['TC12', 'El autor no puede apoyar su propio reporte', 'Error de validación', 'Permitido', 'FALLIDO']];
+    exception when others then
+      v_res := v_res || array[['TC12', 'El autor no puede apoyar su propio reporte', 'Error de validación', sqlerrm, 'APROBADO']];
+    end;
+
     -- === Actuar como otro ciudadano ====================================
     perform set_config('request.jwt.claims', json_build_object('sub', v_otro, 'role', 'authenticated')::text, true);
+    begin
+      v_json := public.toggle_support(v_report);
+      v_txt  := (v_json ->> 'supported') || '/' || (v_json ->> 'count');
+      v_json := public.toggle_support(v_report);
+      v_txt  := v_txt || ' → ' || (v_json ->> 'supported') || '/' || (v_json ->> 'count');
+      perform public.toggle_support(v_report);
+      v_res := v_res || array[['TC12', 'Apoyar y quitar el apoyo («Yo también lo vi») actualiza el contador', 'true/1 → false/0',
+                               v_txt, case when v_txt = 'true/1 → false/0' then 'APROBADO' else 'FALLIDO' end]];
+    exception when others then
+      v_res := v_res || array[['TC12', 'Apoyar y quitar el apoyo («Yo también lo vi») actualiza el contador', 'true/1 → false/0', sqlerrm, 'FALLIDO']];
+    end;
+
     select count(*) into v_n from public.reports where id = v_report;
     v_res := v_res || array[['TC03', 'Reporte recibido es visible para otros ciudadanos desde su recepción', '1 fila visible',
                              v_n || ' fila visible', case when v_n = 1 then 'APROBADO' else 'FALLIDO' end]];
@@ -142,6 +161,17 @@ begin
     -- === Actuar como visitante anónimo =================================
     perform set_config('request.jwt.claims', '{"role":"anon"}', true);
     perform set_config('role', 'anon', true);
+    v_json := public.public_stats();
+    v_res := v_res || array[['TC13', 'Estadísticas públicas disponibles para visitantes, sin datos personales', '12 semanas y conteo de apoyos',
+                             coalesce(jsonb_array_length(v_json -> 'por_semana'), 0) || ' semanas, ' || coalesce(v_json ->> 'apoyos', 'null') || ' apoyo(s)',
+                             case when jsonb_array_length(v_json -> 'por_semana') = 12 and (v_json ->> 'apoyos')::int >= 1
+                                       and v_json::text !~ 'created_by|email' then 'APROBADO' else 'FALLIDO' end]];
+    begin
+      execute 'select user_id from public.report_supports limit 1';
+      v_res := v_res || array[['RNF02', 'Quién apoyó un reporte no es público', 'Acceso denegado', 'Visible', 'FALLIDO']];
+    exception when others then
+      v_res := v_res || array[['RNF02', 'Quién apoyó un reporte no es público', 'Acceso denegado', sqlerrm, 'APROBADO']];
+    end;
     select count(*) into v_n from public.reports where status = 'rechazado';
     v_res := v_res || array[['TC03', 'Visitante no ve reportes rechazados', '0 rechazados visibles',
                              v_n || ' rechazados visibles', case when v_n = 0 then 'APROBADO' else 'FALLIDO' end]];

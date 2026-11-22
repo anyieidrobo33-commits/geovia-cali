@@ -12,6 +12,8 @@ import { friendlyError } from '../lib/supabase';
 import { categoryPin, TILE_ATTRIBUTION, TILE_URL } from '../components/mapIcons';
 import Timeline from '../components/Timeline';
 import ReviewActions from '../components/ReviewActions';
+import SupportButton from '../components/SupportButton';
+import ShareButton from '../components/ShareButton';
 import { CategoryIcon, CenterState, ConditionBadge, DemoBadge, Spinner, StatusBadge } from '../components/ui';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -98,6 +100,12 @@ export default function ReportDetailPage() {
             <StatusBadge status={tracking.status} />
             {tracking.is_demo && <DemoBadge />}
           </div>
+          {report && isPubliclyVisible(report.status) && (
+            <div className="row" style={{ marginTop: 10 }}>
+              <SupportButton reportId={report.id} count={report.supports_count ?? 0} size="md" />
+              <ShareButton code={report.code} categoryCode={report.category_code} sector={report.sector} size="md" />
+            </div>
+          )}
         </div>
       </div>
 

@@ -53,6 +53,10 @@ jobs:
         run: psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/003_actualizaciones_ciudadanas.sql
       - name: Migración 004 (endurecimiento)
         run: psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/004_endurecimiento.sql
+      - name: Migración 005 (visibilidad pública)
+        run: psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/005_visibilidad_publica.sql
+      - name: Migración 006 (apoyos y estadísticas)
+        run: psql -v ON_ERROR_STOP=1 -q -f supabase/migrations/006_apoyos_y_estadisticas.sql
       - name: Pruebas de reglas y seguridad
         run: |
           psql -v ON_ERROR_STOP=1 -f supabase/tests/pruebas_seguridad_y_reglas.sql | tee resultado.txt

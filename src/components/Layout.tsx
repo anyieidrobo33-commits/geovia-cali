@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ListChecks, LogIn, Map as MapIcon, Plus, Search, Smartphone, User, Users, WifiOff } from 'lucide-react';
+import { BarChart3, LayoutDashboard, ListChecks, LogIn, Map as MapIcon, Plus, Search, Smartphone, User, Users, WifiOff } from 'lucide-react';
 import logoPin from '../assets/logo-pin.png';
 import { useAuth } from '../context/AuthContext';
 import { useInstallPrompt, useOnline } from '../hooks/useInstallPrompt';
@@ -34,6 +34,7 @@ export default function Layout() {
           <nav className="nav-desktop" aria-label="Principal">
             <NavLink to="/mapa"><MapIcon size={18} />Mapa</NavLink>
             <NavLink to="/comunidad"><Users size={18} />Comunidad</NavLink>
+            <NavLink to="/estadisticas"><BarChart3 size={18} />Estadísticas</NavLink>
             <NavLink to="/reportar"><Plus size={18} />Reportar</NavLink>
             <NavLink to="/seguimiento"><Search size={18} />Seguimiento</NavLink>
             <NavLink to="/mis-reportes"><ListChecks size={18} />Mis reportes</NavLink>
@@ -42,7 +43,7 @@ export default function Layout() {
           <div className="header-actions">
             {!install.installed && (
               <button className="btn btn-sm btn-ghost" onClick={onInstall} title="Instalar GeoVía en este dispositivo">
-                <Smartphone size={18} /> <span className="hide-sm">Instalar app</span>
+                <Smartphone size={18} /> <span className="hide-md">Instalar app</span>
               </button>
             )}
             <NavLink to="/cuenta" className="btn btn-sm" aria-label={signedIn ? 'Mi cuenta' : 'Ingresar'}>
@@ -66,6 +67,7 @@ export default function Layout() {
         <div className="container footer-inner">
           <span>© {new Date().getFullYear()} GeoVía Cali · Cristian Camilo Alvarado Cardona y Anyie Tatiana Idrobo García · Ingeniería de Sistemas, UNAD</span>
           <span className="row" style={{ gap: 16 }}>
+            <Link to="/estadisticas">Estadísticas y datos abiertos</Link>
             <Link to="/ayuda">Ayuda</Link>
             <Link to="/acerca">Acerca y privacidad</Link>
             <a href="https://www.cali.gov.co/infraestructura/" target="_blank" rel="noreferrer">Canales oficiales</a>

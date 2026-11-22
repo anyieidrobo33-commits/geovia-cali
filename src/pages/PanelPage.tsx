@@ -46,8 +46,10 @@ export default function PanelPage() {
       (!cat || r.category_code === cat) &&
       (!term || `${r.code} ${r.sector ?? ''} ${r.address ?? ''} ${r.description}`.toLowerCase().includes(term)),
     );
-    // Cola FIFO para pendientes: primero los más antiguos
-    return tab === 'pendientes' ? [...list].sort((a, b) => a.created_at.localeCompare(b.created_at)) : list;
+    // Cola priorizada: primero los más apoyados por la ciudadanía; a igual apoyo, los más antiguos
+    return tab === 'pendientes'
+      ? [...list].sort((a, b) => (b.supports_count ?? 0) - (a.supports_count ?? 0) || a.created_at.localeCompare(b.created_at))
+      : list;
   }, [base, tab, cat, q]);
 
   const byCat = useMemo(() => CATEGORIES.map((c) => ({ ...c, n: base.filter((r) => r.category_code === c.code).length })).sort((a, b) => b.n - a.n), [base]);
@@ -148,6 +150,7 @@ export default function PanelPage() {
                 <th scope="col">Sector</th>
                 <th scope="col">Estado</th>
                 <th scope="col">Severidad</th>
+                <th scope="col" title="Apoyos «Yo también lo vi»">Apoyos</th>
                 <th scope="col">Registrado</th>
               </tr>
             </thead>
@@ -159,10 +162,11 @@ export default function PanelPage() {
                   <td>{r.sector || '—'}</td>
                   <td><StatusBadge status={r.status} /></td>
                   <td style={{ textTransform: 'capitalize' }}>{r.severity}</td>
+                  <td><b>{r.supports_count ?? 0}</b></td>
                   <td title={fmtDate(r.created_at)}>{fmtRelative(r.created_at)}</td>
                 </tr>
               ))}
-              {rows.length === 0 && <tr><td colSpan={6} className="muted" style={{ textAlign: 'center', padding: 28 }}>No hay reportes en esta vista.</td></tr>}
+              {rows.length === 0 && <tr><td colSpan={7} className="muted" style={{ textAlign: 'center', padding: 28 }}>No hay reportes en esta vista.</td></tr>}
             </tbody>
           </table>
         </div>

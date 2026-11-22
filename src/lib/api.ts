@@ -19,6 +19,7 @@ export interface Report {
   status: ReportStatus;
   duplicate_of: string | null;
   is_demo: boolean;
+  supports_count: number;
   created_at: string;
   updated_at: string;
   report_photos?: { id: string; storage_path: string }[];
@@ -66,7 +67,7 @@ export interface Stats {
 }
 
 const REPORT_COLUMNS =
-  'id, code, created_by, category_code, severity, description, reference, lat, lng, location_accuracy_m, location_source, address, sector, status, duplicate_of, is_demo, created_at, updated_at';
+  'id, code, created_by, category_code, severity, description, reference, lat, lng, location_accuracy_m, location_source, address, sector, status, duplicate_of, is_demo, supports_count, created_at, updated_at';
 
 export interface ReportFilters {
   statuses?: ReportStatus[];
@@ -272,10 +273,49 @@ export interface FeedItem {
   n_updates: number;
   ultima_condicion: UpdateCondition | null;
   is_demo: boolean;
+  apoyos: number;
 }
 
 export async function fetchFeed(limit = 40): Promise<FeedItem[]> {
   const { data, error } = await supabase.rpc('community_feed', { p_limit: limit });
   if (error) throw error;
   return (data ?? []) as FeedItem[];
+}
+
+// ---------------------------------------------------------------------
+// Apoyos «Yo también lo vi» y estadísticas públicas
+// ---------------------------------------------------------------------
+export async function toggleSupport(reportId: string): Promise<{ supported: boolean; count: number }> {
+  const { data, error } = await supabase.rpc('toggle_support', { p_report_id: reportId });
+  if (error) throw error;
+  return data as { supported: boolean; count: number };
+}
+
+export async function fetchMySupports(): Promise<string[]> {
+  const { data, error } = await supabase.rpc('my_supported_reports');
+  if (error) throw error;
+  return ((data ?? []) as (string | { my_supported_reports: string })[]).map((x) => (typeof x === 'string' ? x : x.my_supported_reports));
+}
+
+export interface PublicStats {
+  total: number;
+  verificados: number;
+  sin_verificar: number;
+  actualizaciones: number;
+  apoyos: number;
+  reparados_segun_ciudadanos: number;
+  horas_validacion_mediana: number | null;
+  por_semana: { semana: string; n: number }[];
+  por_categoria: Partial<Record<CategoryCode, number>>;
+  por_estado: Partial<Record<ReportStatus, number>>;
+  por_severidad: Partial<Record<Severity, number>>;
+  top_sectores: { sector: string; n: number }[];
+  mas_apoyados: { code: string; category_code: CategoryCode; sector: string | null; apoyos: number; status: ReportStatus }[];
+  condiciones: Partial<Record<UpdateCondition, number>>;
+}
+
+export async function fetchPublicStats(): Promise<PublicStats> {
+  const { data, error } = await supabase.rpc('public_stats');
+  if (error) throw error;
+  return data as PublicStats;
 }

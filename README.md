@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img alt="Versión" src="https://img.shields.io/badge/versión-1.2.0-003163">
+  <img alt="Versión" src="https://img.shields.io/badge/versión-1.3.0-003163">
   <img alt="TRL" src="https://img.shields.io/badge/madurez-TRL%205-2f7a12">
   <img alt="PWA" src="https://img.shields.io/badge/PWA-instalable-fea600">
   <img alt="Licencia" src="https://img.shields.io/badge/licencia-MIT-lightgrey">
@@ -60,7 +60,11 @@ GeoVía Cali es un proyecto de grado de Ingeniería de Sistemas (UNAD), desarrol
 | ⚠️ | **Aviso de duplicados** | Antes de enviar, advierte si ya existe un reporte a menos de 30 m (consulta espacial con PostGIS). |
 | 📷 | **Fotos privadas y livianas** | 1 a 3 fotos con la cámara o la galería. Se comprimen en el teléfono y **se eliminan los metadatos EXIF** (ubicación GPS y modelo del teléfono). |
 | 🔎 | **Seguimiento por código** | Código legible `GVC-AAMM-XXXXX`, ficha con fotos, mapa e **historial de estados**. |
-| 🗺️ | **Mapa público** | Marcadores por tipo (color + ícono + forma), filtros por tipo, estado, fecha y barrio, y vista de lista accesible. |
+| 🗺️ | **Mapa público** | Todos los reportes desde que se reciben (borde punteado = sin verificar). Marcadores por tipo (color + ícono + forma), foto en la ventana del marcador, filtros por tipo, estado, fecha y barrio, y vista de lista accesible. |
+| 🔥 | **Zonas críticas** | Mapa de calor que resalta dónde se concentran los daños, ponderado por severidad y apoyos. |
+| 🤝 | **«Yo también lo vi»** | Apoyos ciudadanos de un toque; los más apoyados se priorizan en la revisión. |
+| 📊 | **Estadísticas de la ciudad** | Tendencia semanal, tipos de daño, barrios más afectados, estado de verificación, mediana de horas hasta la verificación y reportes más apoyados. |
+| 🌐 | **Datos abiertos** | Descarga en GeoJSON y CSV (CC BY 4.0) sin datos personales. Compartir reportes por WhatsApp. |
 | 💾 | **Funciona con mala señal** | El borrador se guarda en el dispositivo y la app abre sin conexión. |
 | 📲 | **Instalable** | Ícono en la pantalla de inicio de Android e iPhone, pantalla completa y accesos directos. |
 | 👥 | **Comunidad** | Muro con los últimos daños publicados y las actualizaciones de otros ciudadanos, con foto. |
@@ -146,6 +150,7 @@ GeoVía Cali es un proyecto de grado de Ingeniería de Sistemas (UNAD), desarrol
 | `report_photos` | Rutas de las fotos en el bucket privado |
 | `status_history` | Bitácora inmutable de estados |
 | `status_transitions` | Matriz de transiciones autorizadas |
+| `report_supports` | Apoyos «Yo también lo vi» (uno por persona y reporte; no público) |
 | `report_updates` | Actualizaciones ciudadanas en el sitio (estado observado, comentario, foto, distancia). Ubicación y autor no públicos |
 
 ### Ciclo de vida de un reporte
@@ -182,6 +187,7 @@ geovia-cali/
 ├── supabase/
 │   ├── migrations/       001 esquema y seguridad · 002 demostración (opcional)
 │   │                     003 actualizaciones y comunidad · 004 endurecimiento
+│   │                     005 visibilidad pública · 006 apoyos y estadísticas
 │   ├── seed/reportes_campo/  9 reportes reales de campo (fotos + datos)
 │   └── tests/            Batería SQL de reglas y seguridad
 ├── scripts/              Cargador de reportes de campo
@@ -218,6 +224,8 @@ En **SQL Editor** ejecute, en orden:
 2. `supabase/migrations/002_datos_demostracion.sql` (opcional): 28 registros simulados, marcados como *Dato de demostración*. **En producción no se cargó.**
 3. `supabase/migrations/003_actualizaciones_ciudadanas.sql`: actualizaciones en el sitio y muro de la comunidad.
 4. `supabase/migrations/004_endurecimiento.sql`: ajustes del asesor de seguridad.
+5. `supabase/migrations/005_visibilidad_publica.sql`: reportes públicos desde la recepción (salvo rechazados).
+6. `supabase/migrations/006_apoyos_y_estadisticas.sql`: apoyos y estadísticas públicas.
 
 Luego, en **Authentication → Sign In / Providers**, active **Allow anonymous sign-ins**.
 
@@ -277,14 +285,14 @@ Importe el repositorio en Vercel, defina `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANO
 
 | Nivel | Cantidad | Qué verifica |
 |---|---|---|
-| Unitarias (Vitest) | 32 | Validaciones, fotos, matriz de transiciones **sincronizada con el SQL**, catálogo, contraste WCAG ≥ 4.5:1, Haversine, códigos, CSV sin datos personales |
-| Reglas y seguridad (SQL) | 22 | Registro válido, validaciones del servidor, fotos ajenas, permisos por rol, RLS (visitante y otro ciudadano), transiciones, motivo obligatorio, bitácora inmutable, duplicados, actualizaciones en el sitio (distancia, precisión GPS, límite, privacidad de la ubicación) |
+| Unitarias (Vitest) | 36 | Validaciones, fotos, matriz de transiciones **sincronizada con el SQL**, catálogo, contraste WCAG ≥ 4.5:1, Haversine, códigos, CSV sin datos personales |
+| Reglas y seguridad (SQL) | 27 | Registro válido, validaciones del servidor, fotos ajenas, permisos por rol, RLS (visitante y otro ciudadano), transiciones, motivo obligatorio, bitácora inmutable, duplicados, actualizaciones en el sitio (distancia, precisión GPS, límite, privacidad de la ubicación), visibilidad pública salvo rechazados, apoyos (contador, autor no puede apoyarse, anonimato) y estadísticas públicas |
 | Integración continua | 2 trabajos | GitHub Actions ejecuta ambas baterías en cada cambio, con PostgreSQL + PostGIS reales |
 | Funcionales y usabilidad | TC01–TC10 | En la app publicada y en celulares: **[docs/PLAN_DE_PRUEBAS.md](docs/PLAN_DE_PRUEBAS.md)** |
 
 ```bash
-npm test                                                     # 32 pruebas
-# En Supabase → SQL Editor: supabase/tests/pruebas_seguridad_y_reglas.sql   → 22 APROBADO
+npm test                                                     # 36 pruebas
+# En Supabase → SQL Editor: supabase/tests/pruebas_seguridad_y_reglas.sql   → 27 APROBADO
 ```
 
 ---
@@ -296,7 +304,7 @@ Diseñada conforme a la **Ley 1581 de 2012** (protección de datos personales en
 - **Consentimiento explícito** antes de enviar cada reporte.
 - **Minimización**: no se requiere cuenta ni datos personales para reportar.
 - **Fotos sin metadatos**: se elimina el EXIF (GPS, dispositivo) en el propio teléfono.
-- **Publicación anónima**: el mapa y la exportación no identifican al autor.
+- **Publicación anónima**: el mapa, la comunidad y los datos abiertos no identifican al autor; quién apoya o actualiza tampoco es público.
 - **Control de acceso** aplicado en la base de datos (RLS) y en funciones RPC con verificación de rol.
 - **Almacenamiento privado** de fotos con URLs firmadas de una hora.
 - **Antiabuso**: máximo 10 reportes por hora por sesión y validación de que cada foto pertenezca a quien reporta.
@@ -322,6 +330,7 @@ Diseñada conforme a la **Ley 1581 de 2012** (protección de datos personales en
 - [x] Moderación con bitácora inmutable y exportación
 - [x] PWA instalable y uso con conectividad intermitente
 - [x] Reportes reales de campo en Cali
+- [x] Comunidad, actualizaciones en el sitio, apoyos, zonas críticas, estadísticas y datos abiertos
 - [ ] Empaquetado Android con Capacitor (APK/AAB) y publicación en Google Play
 - [ ] Notificaciones de cambio de estado
 - [ ] Capa oficial de comunas y barrios (Datos Abiertos de Cali)

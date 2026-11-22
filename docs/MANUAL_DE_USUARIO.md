@@ -1,7 +1,7 @@
 <p align="center"><img src="../public/icons/icon-192.png" width="88" alt="GeoVía Cali"></p>
 
 <h1 align="center">Manual de usuario · GeoVía Cali</h1>
-<p align="center">Versión 1.2 · Noviembre de 2026</p>
+<p align="center">Versión 1.3 · Noviembre de 2026</p>
 
 GeoVía Cali le permite **reportar daños de las vías de Santiago de Cali** (huecos, grietas, hundimientos, tapas de alcantarilla dañadas y más), **verlos en un mapa** y **hacer seguimiento** a cada reporte con un código. No necesita crear una cuenta.
 
@@ -17,6 +17,7 @@ GeoVía Cali le permite **reportar daños de las vías de Santiago de Cali** (hu
 6. [Hacer seguimiento a un reporte](#6-hacer-seguimiento-a-un-reporte)
 7. [Mis reportes y cuenta opcional](#7-mis-reportes-y-cuenta-opcional)
    - [Comunidad y actualización de reportes](#comunidad-y-actualización-de-reportes)
+   - [Apoyos, compartir, zonas críticas y estadísticas](#apoyos-compartir-zonas-críticas-y-estadísticas)
 8. [Para revisores: moderar reportes](#8-para-revisores-moderar-reportes)
 9. [Para el administrador: usuarios y roles](#9-para-el-administrador-usuarios-y-roles)
 10. [Estados de un reporte](#10-estados-de-un-reporte)
@@ -212,7 +213,7 @@ El código queda guardado en el dispositivo, en **Mis reportes** y en **Seguimie
 - **+ Reportar**: atajo para crear un reporte.
 - En el computador, la **leyenda** explica los colores y el tiempo de carga de los datos.
 
-El mapa público solo muestra reportes **validados** o **cerrados**. Sus propios reportes pendientes aparecen con **borde punteado** solo en su dispositivo.
+El mapa muestra **todos los reportes desde que se reciben**. Los que aún no verifica un revisor tienen **borde punteado** (estado *Recibido* o *En revisión*); al validarse, el marcador pasa a ser sólido. Los reportes **rechazados** dejan de mostrarse al público.
 </td>
 </tr></table>
 
@@ -230,7 +231,7 @@ El mapa público solo muestra reportes **validados** o **cerrados**. Sus propios
 <td>El <b>historial de estados</b> muestra cada cambio con fecha, hora, rol responsable y motivo. Nadie puede modificarlo ni borrarlo.</td>
 </tr></table>
 
-> Si el reporte aún no está validado, otras personas solo ven el estado y el historial: la descripción, la ubicación y las fotos quedan reservadas para quien lo envió y para los revisores.
+> Todos los reportes son públicos desde que se reciben, salvo los **rechazados**: de esos, otras personas solo ven el estado y el historial con el motivo.
 
 ---
 
@@ -283,6 +284,13 @@ Su ubicación exacta **solo se usa para verificar** que está en el sitio y **no
 </td>
 </tr></table>
 
+### Apoyos, compartir, zonas críticas y estadísticas
+
+- **«Yo también lo vi»**: en la comunidad, en la ficha o en el mapa, toque este botón si también ha visto el daño. El número muestra cuántas personas lo respaldan. Tóquelo de nuevo para retirar su apoyo. Los reportes más apoyados suben en la cola de revisión.
+- **Compartir**: el botón con el ícono de compartir abre el menú del celular (WhatsApp, Telegram, correo…) con el enlace del reporte.
+- **Zonas críticas**: en el mapa, toque **Zonas críticas** para ver un mapa de calor que resalta en naranja y rojo dónde se concentran los daños. Tóquelo de nuevo para ocultarlo.
+- **Estadísticas** (menú superior o pie de página): tendencia semanal, tipos de daño, barrios más afectados, avance de la verificación, tiempo típico hasta la verificación y los reportes más apoyados. Al final, **Datos abiertos** permite descargar los reportes en **GeoJSON** (QGIS, ArcGIS) o **CSV** (Excel, Power BI), sin datos personales.
+
 ---
 
 ## 8. Para revisores: moderar reportes
@@ -295,7 +303,7 @@ El rol de revisor lo asigna el administrador. Después de ingresar, aparece **Pa
 
 - **Indicadores**: total de reportes, pendientes, porcentaje validado o cerrado y duplicados vinculados.
 - **Gráficas** por tipo de afectación y por estado.
-- **Pestañas por estado.** *Pendientes* (Recibido + En revisión) ordena del más antiguo al más reciente.
+- **Pestañas por estado.** *Pendientes* (Recibido + En revisión) se ordena por **prioridad**: primero los más apoyados por la ciudadanía y, a igual apoyo, los más antiguos. La columna **Apoyos** muestra el respaldo de cada reporte.
 - **Búsqueda** por código, barrio, dirección o texto, y filtro por tipo.
 - **Ocultar datos de demostración** para trabajar solo con reportes ciudadanos.
 - **Exportar CSV**: descarga la vista actual **sin datos personales**, lista para Excel.

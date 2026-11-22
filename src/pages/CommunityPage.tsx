@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Camera, Eye, MapPin, MessagesSquare, RefreshCw, Users } from 'lucide-react';
+import { BarChart3, Camera, Eye, MapPin, MessagesSquare, RefreshCw, Users } from 'lucide-react';
 import { fetchFeed, signedPhotoUrls, type FeedItem } from '../lib/api';
 import { categoryMeta } from '../lib/domain';
 import { fmtRelative } from '../lib/format';
 import { friendlyError } from '../lib/supabase';
 import { CategoryIcon, CenterState, ConditionBadge, DemoBadge, Spinner, StatusBadge } from '../components/ui';
+import SupportButton from '../components/SupportButton';
+import ShareButton from '../components/ShareButton';
 
 type Filter = 'todo' | 'reporte' | 'actualizacion';
 
@@ -39,7 +41,10 @@ export default function CommunityPage() {
           <h1 className="row" style={{ gap: 10 }}><Users size={30} />Comunidad</h1>
           <p>Lo último que reporta la ciudadanía, lo que verifican los revisores y las actualizaciones tomadas en el sitio. ¿Pasa por uno? Cuéntenos cómo está hoy.</p>
         </div>
-        <button className="btn" onClick={load} aria-label="Actualizar el muro"><RefreshCw size={18} /></button>
+        <div className="row">
+          <Link to="/estadisticas" className="btn"><BarChart3 size={18} />Estadísticas</Link>
+          <button className="btn" onClick={load} aria-label="Actualizar el muro"><RefreshCw size={18} /></button>
+        </div>
       </div>
 
       <div className="segmented" role="group" aria-label="Filtrar publicaciones" style={{ marginBottom: 14 }}>
@@ -82,6 +87,10 @@ export default function CommunityPage() {
                     <p className="small">Última actualización ciudadana: <ConditionBadge condition={it.ultima_condicion} /> · {it.n_updates} en total</p>
                   )}
                   <span className="small code-display">{it.code}</span>
+                </div>
+                <div className="post-actions">
+                  <SupportButton reportId={it.report_id} count={it.apoyos ?? 0} />
+                  <ShareButton code={it.code} categoryCode={it.category_code} sector={it.sector} />
                 </div>
                 <div className="post-actions">
                   <Link to={`/r/${it.code}`} className="btn btn-sm"><Eye size={16} />Ver detalle</Link>

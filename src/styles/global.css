@@ -440,3 +440,36 @@ dialog { color: var(--ink); }
 .cond-option b { color: var(--navy); }
 .cond-option span { font-size: 0.8rem; color: var(--ink-3); }
 .popup-photo { width: 100%; height: 120px; object-fit: cover; border-radius: 10px; margin: 6px 0 4px; background: var(--line-2); }
+
+/* ---------- Apoyos ---------- */
+.support-btn .support-count { background: var(--line-2); color: var(--ink-2); border-radius: 999px; padding: 0 8px; font-size: 0.8rem; min-width: 24px; text-align: center; }
+.support-btn.is-active { --b-bg: var(--amber-50); --b-bd: #f6d58a; --b-fg: var(--amber-700); }
+.support-btn.is-active .support-count { background: var(--amber); color: var(--navy-900); }
+.post-actions .support-btn { flex: 1; }
+.post-actions + .post-actions { padding-top: 0; }
+.post-actions .btn[aria-label='Compartir reporte'] { flex: 0 0 auto; }
+.map-fab { align-items: flex-end; }
+.map-fab .icon-btn { align-self: flex-end; }
+
+/* ---------- Estadísticas ---------- */
+.hbars { display: flex; flex-direction: column; gap: 8px; }
+.hbar { display: grid; grid-template-columns: minmax(120px, 210px) 1fr 34px; gap: 10px; align-items: center; font-size: 0.87rem; }
+.hbar-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hbar-track { height: 12px; background: var(--line-2); border-radius: 6px; overflow: hidden; }
+.hbar-fill { height: 100%; background: var(--navy-600); border-radius: 0 4px 4px 0; min-width: 4px; }
+.hbar:hover .hbar-fill { background: var(--navy); }
+.hbar-value { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink); }
+@media (max-width: 520px) { .hbar { grid-template-columns: 1fr 30px; } .hbar-label { grid-column: 1 / -1; } .hbar-track { grid-column: 1; } }
+svg.weekly { width: 100%; height: auto; display: block; }
+svg.weekly .grid { stroke: var(--line-2); stroke-width: 1; }
+svg.weekly .baseline { stroke: #9aa8b6; stroke-width: 1; }
+svg.weekly .axis { fill: var(--ink-3); font-size: 11px; font-family: var(--font); }
+svg.weekly .col { fill: var(--navy-600); }
+svg.weekly .col.is-hover { fill: var(--navy); }
+
+/* Menú de escritorio compacto (más secciones) */
+.nav-desktop a { white-space: nowrap; padding: 8px 10px; font-size: 0.92rem; }
+.brand-text { white-space: nowrap; }
+@media (max-width: 1279px) { .hide-md { display: none; } }
+@media (min-width: 900px) and (max-width: 1100px) { .nav-desktop a svg { display: none; } }
+svg.weekly { max-height: 280px; }

@@ -2,6 +2,20 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado semántico.
 
+## [1.3.0] — 2026-11-22
+
+### Agregado
+- **Estadísticas de la ciudad** (`/estadisticas`): indicadores, tendencia semanal, tipos de daño, barrios con más reportes, estado de verificación, severidad, observaciones en sitio, mediana de horas hasta la verificación y los reportes más apoyados.
+- **Apoyos «Yo también lo vi»**: un toque para respaldar un reporte (sin cuenta). El panel de revisión prioriza los pendientes más apoyados.
+- **Zonas críticas**: mapa de calor ponderado por severidad y apoyos.
+- **Compartir** un reporte (hoja nativa del celular o WhatsApp).
+- **Datos abiertos**: descarga en GeoJSON y CSV (CC BY 4.0), sin datos personales.
+- Migración 006 y 4 pruebas SQL nuevas (27 en total); 4 pruebas unitarias nuevas (36 en total).
+
+### Cambiado
+- **Visibilidad pública desde la recepción** (migración 005): los reportes aparecen en el mapa y en la comunidad apenas se envían, marcados «sin verificar»; solo los rechazados se ocultan. Las actualizaciones ciudadanas se permiten en cualquier reporte no rechazado.
+- La comunidad muestra también cuándo un revisor verifica un reporte.
+
 ## [1.2.0] — 2026-11-22
 
 ### Agregado

@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MapContainer, Marker, Popup, TileLayer, useMap, Circle } from 'react-leaflet';
-import { Camera, Filter, List, LocateFixed, Map as MapIcon, Plus, RefreshCw, X } from 'lucide-react';
+import { Camera, Filter, Flame, List, LocateFixed, Map as MapIcon, Plus, RefreshCw, X } from 'lucide-react';
+import { HeatLayer } from 'leaflet.heat';
+import type L from 'leaflet';
 import { fetchReports, signedPhotoUrls, type Report } from '../lib/api';
 import { CALI_CENTER, CATEGORIES, isPubliclyVisible, STATUSES, categoryMeta, type CategoryCode, type ReportStatus } from '../lib/domain';
 import { categoryPin, TILE_ATTRIBUTION, TILE_URL, userLocationIcon } from '../components/mapIcons';
 import { CategoryIcon, DemoBadge, Spinner, StatusBadge } from '../components/ui';
+import SupportButton from '../components/SupportButton';
 import { ReportListItem } from '../components/ReportListItem';
 import { fmtDate } from '../lib/format';
 import { friendlyError } from '../lib/supabase';
@@ -18,6 +21,24 @@ function PopupPhoto({ path }: { path: string }) {
   const [url, setUrl] = useState<string | null>(null);
   useEffect(() => { signedPhotoUrls([path]).then((u) => setUrl(u[path] ?? null)).catch(() => setUrl(null)); }, [path]);
   return url ? <img className="popup-photo" src={url} alt="Fotografía del daño" /> : <div className="popup-photo skeleton" />;
+}
+
+/** Zonas críticas: densidad de daños ponderada por severidad y apoyos ciudadanos. */
+function HeatOverlay({ reports }: { reports: Report[] }) {
+  const map = useMap();
+  useEffect(() => {
+    const sev = { baja: 0.45, media: 0.7, alta: 1 } as const;
+    const pts = reports.map((r) => [r.lat, r.lng, Math.min(1, sev[r.severity] + (r.supports_count ?? 0) * 0.1)] as [number, number, number]);
+    const layer = new HeatLayer(pts, {
+      radius: 32, blur: 24, minOpacity: 0.35, max: 1,
+      gradient: { 0.25: '#fde68a', 0.55: '#f59e0b', 0.8: '#dc2626', 1: '#7f1d1d' },
+    });
+    // Los tipos del plugin apuntan a Leaflet 2; en tiempo de ejecución es compatible con Leaflet 1.9.
+    const asLayer = layer as unknown as L.Layer;
+    asLayer.addTo(map);
+    return () => { asLayer.remove(); };
+  }, [reports, map]);
+  return null;
 }
 
 /** Al cargar por primera vez, encuadra todos los reportes visibles. */
@@ -53,6 +74,7 @@ export default function MapPage() {
   const [me, setMe] = useState<{ pos: [number, number]; acc: number } | null>(null);
   const [locating, setLocating] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
+  const [heat, setHeat] = useState(false);
 
   const load = async () => {
     setError(null);
@@ -128,6 +150,7 @@ export default function MapPage() {
               <div className="small muted" style={{ marginBottom: 8 }}>
                 {r.sector ? `${r.sector} · ` : ''}{fmtDate(r.created_at)}
               </div>
+              {isPubliclyVisible(r.status) && <div style={{ marginBottom: 6 }}><SupportButton reportId={r.id} count={r.supports_count ?? 0} /></div>}
               <div className="row" style={{ gap: 6 }}>
                 <Link to={`/r/${r.code}`} className="btn btn-sm btn-navy" style={{ color: '#fff' }}>Ver detalle</Link>
                 {isPubliclyVisible(r.status) && (
@@ -144,6 +167,7 @@ export default function MapPage() {
           </>
         )}
         <FlyTo target={me?.pos ?? null} />
+        {heat && <HeatOverlay reports={filtered} />}
         <FitToReports points={reportPoints} />
       </MapContainer>
 
@@ -182,6 +206,8 @@ export default function MapPage() {
       {view === 'map' && (
         <>
           <div className="map-fab">
+            <button className={`btn floating ${heat ? 'btn-amber' : ''}`} onClick={() => setHeat((h) => !h)} aria-pressed={heat}
+              title="Mostrar zonas críticas (mapa de calor)"><Flame size={18} />Zonas críticas</button>
             <button className="btn floating icon-btn" onClick={locate} aria-label="Centrar en mi ubicación" title="Mi ubicación">
               {locating ? <Spinner size={18} /> : <LocateFixed size={20} />}
             </button>
@@ -193,6 +219,7 @@ export default function MapPage() {
                 <li key={c.code}><span className="swatch" style={{ background: c.color }} />{c.name}</li>
               ))}
               <li className="muted" style={{ marginTop: 4 }}>Borde punteado: aún sin verificar</li>
+              {heat && <li style={{ marginTop: 4, display: 'block' }}><b>Zonas críticas</b><div style={{ height: 8, borderRadius: 4, margin: '4px 0 2px', background: 'linear-gradient(90deg,#fde68a,#f59e0b,#dc2626,#7f1d1d)' }} /><span className="muted">menor → mayor concentración</span></li>}
             </ul>
             {loadMs !== null && <div className="muted" style={{ marginTop: 6 }}>{reports?.length ?? 0} marcadores cargados en {loadMs} ms</div>}
           </div>

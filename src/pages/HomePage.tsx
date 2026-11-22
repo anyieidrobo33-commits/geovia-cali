@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Camera, History, Info, MapPin, Map as MapIcon, Plus, Search, ShieldCheck } from 'lucide-react';
+import { BarChart3, Camera, History, Info, MapPin, Map as MapIcon, Plus, Search, ShieldCheck, Users } from 'lucide-react';
 import logoFull from '../assets/logo-full.png';
 import { fetchStats, type Stats } from '../lib/api';
 import { CATEGORIES } from '../lib/domain';
@@ -92,6 +92,17 @@ export default function HomePage() {
               </div>
             ) : <p className="muted">Aún no hay suficientes datos.</p>}
           </div>
+        </section>
+
+        <section className="section grid-2">
+          <Link to="/comunidad" className="card card-pad" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <div className="card-title"><Users size={20} color="var(--navy)" /><h2>Comunidad</h2></div>
+            <p className="muted" style={{ margin: 0 }}>Vea lo último que reportan los caleños, apoye los daños que también ha visto y actualícelos desde el sitio.</p>
+          </Link>
+          <Link to="/estadisticas" className="card card-pad" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <div className="card-title"><BarChart3 size={20} color="var(--navy)" /><h2>Estadísticas y datos abiertos</h2></div>
+            <p className="muted" style={{ margin: 0 }}>Tendencias, barrios más afectados, tiempos de verificación y descarga en GeoJSON o CSV.</p>
+          </Link>
         </section>
 
         <section className="section">
