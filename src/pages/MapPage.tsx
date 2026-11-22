@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MapContainer, Marker, Popup, TileLayer, useMap, Circle } from 'react-leaflet';
 import { Camera, Filter, List, LocateFixed, Map as MapIcon, Plus, RefreshCw, X } from 'lucide-react';
@@ -18,6 +18,19 @@ function PopupPhoto({ path }: { path: string }) {
   const [url, setUrl] = useState<string | null>(null);
   useEffect(() => { signedPhotoUrls([path]).then((u) => setUrl(u[path] ?? null)).catch(() => setUrl(null)); }, [path]);
   return url ? <img className="popup-photo" src={url} alt="Fotografía del daño" /> : <div className="popup-photo skeleton" />;
+}
+
+/** Al cargar por primera vez, encuadra todos los reportes visibles. */
+function FitToReports({ points }: { points: [number, number][] }) {
+  const map = useMap();
+  const done = useRef(false);
+  useEffect(() => {
+    if (done.current || points.length === 0) return;
+    done.current = true;
+    if (points.length === 1) map.setView(points[0], 16);
+    else map.fitBounds(points, { paddingTopLeft: [30, 90], paddingBottomRight: [30, 90], maxZoom: 16 });
+  }, [points, map]);
+  return null;
 }
 
 function FlyTo({ target }: { target: [number, number] | null }) {
@@ -72,6 +85,8 @@ export default function MapPage() {
       (!q || `${r.sector ?? ''} ${r.address ?? ''} ${r.code}`.toLowerCase().includes(q)),
     );
   }, [reports, cats, sts, range, sector]);
+
+  const reportPoints = useMemo(() => (reports ?? []).map((r) => [r.lat, r.lng] as [number, number]), [reports]);
 
   const activeFilters = cats.size + sts.size + (range ? 1 : 0) + (sector ? 1 : 0);
 
@@ -129,6 +144,7 @@ export default function MapPage() {
           </>
         )}
         <FlyTo target={me?.pos ?? null} />
+        <FitToReports points={reportPoints} />
       </MapContainer>
 
       {view === 'list' && (
