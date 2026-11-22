@@ -109,8 +109,8 @@ GeoVía Cali es un proyecto de grado de Ingeniería de Sistemas (UNAD), desarrol
   </tr>
   <tr>
     <td align="center"><img src="docs/img/10-confirmacion.png" width="200"><br><sub>Código de seguimiento</sub></td>
-    <td align="center"><img src="docs/img/12-ficha-reporte.png" width="200"><br><sub>Ficha del reporte</sub></td>
-    <td align="center"><img src="docs/img/13-ficha-historial.png" width="200"><br><sub>Historial de estados</sub></td>
+    <td align="center"><img src="docs/img/25-estadisticas.png" width="200"><br><sub>Estadísticas</sub></td>
+    <td align="center"><img src="docs/img/26-zonas-criticas.png" width="200"><br><sub>Zonas críticas</sub></td>
     <td align="center"><img src="docs/img/18-comunidad.png" width="200"><br><sub>Comunidad</sub></td>
   </tr>
 </table>

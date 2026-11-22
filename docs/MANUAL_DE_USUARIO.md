@@ -286,6 +286,14 @@ Su ubicación exacta **solo se usa para verificar** que está en el sitio y **no
 
 ### Apoyos, compartir, zonas críticas y estadísticas
 
+<table><tr>
+<td width="33%"><img src="img/26-zonas-criticas.png" alt="Zonas críticas en el mapa"></td>
+<td width="33%"><img src="img/25-estadisticas.png" alt="Estadísticas de la ciudad"></td>
+<td width="33%"><img src="img/18-comunidad.png" alt="Comunidad con apoyos"></td>
+</tr><tr>
+<td>Zonas críticas (mapa de calor)</td><td>Estadísticas de la ciudad</td><td>Apoyos y compartir en la comunidad</td>
+</tr></table>
+
 - **«Yo también lo vi»**: en la comunidad, en la ficha o en el mapa, toque este botón si también ha visto el daño. El número muestra cuántas personas lo respaldan. Tóquelo de nuevo para retirar su apoyo. Los reportes más apoyados suben en la cola de revisión.
 - **Compartir**: el botón con el ícono de compartir abre el menú del celular (WhatsApp, Telegram, correo…) con el enlace del reporte.
 - **Zonas críticas**: en el mapa, toque **Zonas críticas** para ver un mapa de calor que resalta en naranja y rojo dónde se concentran los daños. Tóquelo de nuevo para ocultarlo.
