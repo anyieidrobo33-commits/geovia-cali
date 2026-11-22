@@ -22,8 +22,6 @@ const HelpPage = lazy(() => import('./pages/HelpPage'));
 const CommunityPage = lazy(() => import('./pages/CommunityPage'));
 const UpdatePage = lazy(() => import('./pages/UpdatePage'));
 const StatsPage = lazy(() => import('./pages/StatsPage'));
-const EvaluationPage = lazy(() => import('./pages/EvaluationPage'));
-const EvaluationResultsPage = lazy(() => import('./pages/EvaluationResultsPage'));
 
 /** Protección de rutas en la interfaz. La protección real la aplica el servidor (RLS + RPC). */
 function RequireStaff({ admin = false, children }: { admin?: boolean; children: ReactNode }) {
@@ -90,8 +88,6 @@ export default function App() {
                     <Route path="ingresar" element={<Navigate to="/cuenta" replace />} />
                     <Route path="acerca" element={<AboutPage />} />
                     <Route path="ayuda" element={<HelpPage />} />
-                    <Route path="evaluar" element={<EvaluationPage />} />
-                    <Route path="panel/evaluacion" element={<RequireStaff><EvaluationResultsPage /></RequireStaff>} />
                     <Route path="panel" element={<RequireStaff><PanelPage /></RequireStaff>} />
                     <Route path="panel/usuarios" element={<RequireStaff admin><UsersPage /></RequireStaff>} />
                     <Route path="*" element={<NotFound />} />

@@ -354,10 +354,6 @@ El rol de revisor lo asigna el administrador. Después de ingresar, aparece **Pa
 
 ---
 
-### Resultados de la evaluación con participantes
-
-En **Panel → Evaluación** el equipo ve el enlace y el código QR para invitar participantes (`/evaluar`), el número de encuestas, la tasa de tareas completadas sin ayuda, el tiempo mediano por tarea, el puntaje SUS promedio, las frecuencias de cada pregunta y las respuestas abiertas. El botón **Exportar CSV** descarga todo sin datos personales.
-
 ## 9. Para el administrador: usuarios y roles
 
 <img src="img/22-usuarios.png" alt="Usuarios y roles">

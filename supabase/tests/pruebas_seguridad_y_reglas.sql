@@ -258,41 +258,6 @@ begin
       v_res := v_res || array[['TC11', 'Limitar a una actualización por reporte por hora', 'Error de límite', sqlerrm, 'APROBADO']];
     end;
 
-    -- === Evaluación con participantes (migración 008) =====================
-    begin
-      perform set_config('geovia.eval_id', public.submit_evaluation(jsonb_build_object(
-        'device', 'telefono',
-        'diagnostic', (select jsonb_object_agg('P' || lpad(g::text, 2, '0'), 'Sí') from generate_series(1, 15) g),
-        'tasks', '[{"id":"T1","completed":true,"help":false,"seconds":95}]'::jsonb,
-        'sus', '[4,2,4,2,4,2,4,2,4,2]'::jsonb))::text, true);
-      select count(*) into v_n from public.evaluations;
-      v_res := v_res || array[['RNF02', 'Un ciudadano no puede leer las evaluaciones registradas', '0 filas visibles',
-                               v_n || ' filas visibles', case when v_n = 0 then 'APROBADO' else 'FALLIDO' end]];
-      perform set_config('role', 'none', true);
-      select sus_score::int into v_n from public.evaluations where id = current_setting('geovia.eval_id')::uuid;
-      v_res := v_res || array[['TC15', 'Registrar evaluación anónima y calcular el puntaje SUS', 'SUS = 75',
-                               'SUS = ' || coalesce(v_n::text, 'nulo'), case when v_n = 75 then 'APROBADO' else 'FALLIDO' end]];
-      perform set_config('role', 'authenticated', true);
-    exception when others then
-      v_res := v_res || array[['TC15', 'Registrar evaluación anónima y calcular el puntaje SUS', 'SUS = 75', sqlerrm, 'FALLIDO']];
-    end;
-    begin
-      perform public.submit_evaluation(jsonb_build_object('diagnostic',
-        (select jsonb_object_agg('P' || lpad(g::text, 2, '0'), 'No') from generate_series(1, 15) g)));
-      v_res := v_res || array[['TC15', 'Impedir una segunda evaluación desde la misma sesión', 'Error de duplicado', 'Aceptado', 'FALLIDO']];
-    exception when others then
-      v_res := v_res || array[['TC15', 'Impedir una segunda evaluación desde la misma sesión', 'Error de duplicado', sqlerrm, 'APROBADO']];
-    end;
-    perform set_config('request.jwt.claims', json_build_object('sub', v_ciudadano, 'role', 'authenticated')::text, true);
-    begin
-      perform public.submit_evaluation(jsonb_build_object(
-        'diagnostic', (select jsonb_object_agg('P' || lpad(g::text, 2, '0'), 'Sí') from generate_series(1, 15) g),
-        'sus', '[4,2,4,2,4,2,4,2,4,9]'::jsonb));
-      v_res := v_res || array[['TC15', 'Rechazar respuestas SUS fuera de la escala 1–5', 'Error de validación', 'Aceptado', 'FALLIDO']];
-    exception when others then
-      v_res := v_res || array[['TC15', 'Rechazar respuestas SUS fuera de la escala 1–5', 'Error de validación', sqlerrm, 'APROBADO']];
-    end;
-
     perform set_config('request.jwt.claims', '{"role":"anon"}', true);
     perform set_config('role', 'anon', true);
     begin
