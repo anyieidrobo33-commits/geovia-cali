@@ -7,7 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { fetchReportByCode, signedPhotoUrls, submitUpdate, uploadPhoto, type Report } from '../lib/api';
 import {
-  CONDITIONS, PUBLIC_STATUSES, UPDATE_COMMENT_MAX, UPDATE_MAX_ACCURACY_M, UPDATE_MAX_DISTANCE_M,
+  CONDITIONS, isPubliclyVisible, UPDATE_COMMENT_MAX, UPDATE_MAX_ACCURACY_M, UPDATE_MAX_DISTANCE_M,
   categoryMeta, checkOnSite, type GpsFix, type UpdateCondition,
 } from '../lib/domain';
 import { friendlyError } from '../lib/supabase';
@@ -42,12 +42,12 @@ export default function UpdatePage() {
   }, [code, user?.id]);
 
   if (report === undefined) return <div className="container page"><Spinner label="Cargando reporte…" /></div>;
-  const canUpdate = report && (PUBLIC_STATUSES.includes(report.status) || report.created_by === user?.id);
+  const canUpdate = report && isPubliclyVisible(report.status);
   if (!report || !canUpdate) {
     return (
       <div className="container container-narrow page">
         <CenterState icon={<CircleAlert size={30} />} title="Este reporte no se puede actualizar">
-          <p>Solo se actualizan reportes publicados en el mapa.</p>
+          <p>Los reportes rechazados por los revisores no se pueden actualizar.</p>
           <Link to="/comunidad" className="btn btn-navy">Ver reportes de la comunidad</Link>
         </CenterState>
       </div>

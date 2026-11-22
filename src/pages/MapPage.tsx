@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { MapContainer, Marker, Popup, TileLayer, useMap, Circle } from 'react-leaflet';
 import { Camera, Filter, List, LocateFixed, Map as MapIcon, Plus, RefreshCw, X } from 'lucide-react';
 import { fetchReports, signedPhotoUrls, type Report } from '../lib/api';
-import { CALI_CENTER, CATEGORIES, PUBLIC_STATUSES, STATUSES, categoryMeta, type CategoryCode, type ReportStatus } from '../lib/domain';
+import { CALI_CENTER, CATEGORIES, isPubliclyVisible, STATUSES, categoryMeta, type CategoryCode, type ReportStatus } from '../lib/domain';
 import { categoryPin, TILE_ATTRIBUTION, TILE_URL, userLocationIcon } from '../components/mapIcons';
 import { CategoryIcon, DemoBadge, Spinner, StatusBadge } from '../components/ui';
 import { ReportListItem } from '../components/ReportListItem';
@@ -130,7 +130,7 @@ export default function MapPage() {
               </div>
               <div className="row" style={{ gap: 6 }}>
                 <Link to={`/r/${r.code}`} className="btn btn-sm btn-navy" style={{ color: '#fff' }}>Ver detalle</Link>
-                {PUBLIC_STATUSES.includes(r.status) && (
+                {isPubliclyVisible(r.status) && (
                   <Link to={`/r/${r.code}/actualizar`} className="btn btn-sm"><Camera size={14} />Actualizar</Link>
                 )}
               </div>
@@ -192,7 +192,7 @@ export default function MapPage() {
               {CATEGORIES.map((c) => (
                 <li key={c.code}><span className="swatch" style={{ background: c.color }} />{c.name}</li>
               ))}
-              <li className="muted" style={{ marginTop: 4 }}>Borde punteado: aún no publicado</li>
+              <li className="muted" style={{ marginTop: 4 }}>Borde punteado: aún sin verificar</li>
             </ul>
             {loadMs !== null && <div className="muted" style={{ marginTop: 6 }}>{reports?.length ?? 0} marcadores cargados en {loadMs} ms</div>}
           </div>

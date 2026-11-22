@@ -21,6 +21,7 @@ declare
   v_otro      uuid := gen_random_uuid();
   v_revisor   uuid := gen_random_uuid();
   v_report    uuid;
+  v_rech      uuid;
   v_code      text;
   v_path      text;
   v_res       text[][] := array[]::text[][];
@@ -39,6 +40,7 @@ begin
 
     v_path := v_ciudadano::text || '/prueba/foto-1.jpg';
     insert into storage.objects (bucket_id, name, owner) values ('evidencias', v_path, v_ciudadano);
+    insert into storage.objects (bucket_id, name, owner) values ('evidencias', v_ciudadano::text || '/prueba/foto-2.jpg', v_ciudadano);
     insert into storage.objects (bucket_id, name, owner) values ('evidencias', v_otro::text || '/act/foto-1.jpg', v_otro),
                                                                ('evidencias', v_otro::text || '/act/foto-2.jpg', v_otro);
 
@@ -58,6 +60,9 @@ begin
     exception when others then
       v_res := v_res || array[['TC01', 'Registrar reporte válido con foto y ubicación', 'Código GVC-AAMM-XXXXX', sqlerrm, 'FALLIDO']];
     end;
+
+    select s.id into v_rech from public.submit_report('otro', 'baja', 'Reporte de prueba que será rechazado por el revisor.', null,
+                                  3.4400, -76.5300, 10, 'gps', null, null, array[v_ciudadano::text || '/prueba/foto-2.jpg'], true) s;
 
     -- TC09a Descripción insuficiente
     begin
@@ -131,19 +136,21 @@ begin
     -- === Actuar como otro ciudadano ====================================
     perform set_config('request.jwt.claims', json_build_object('sub', v_otro, 'role', 'authenticated')::text, true);
     select count(*) into v_n from public.reports where id = v_report;
-    v_res := v_res || array[['RNF02', 'Otro ciudadano no ve reportes pendientes ajenos', '0 filas visibles',
-                             v_n || ' filas visibles', case when v_n = 0 then 'APROBADO' else 'FALLIDO' end]];
+    v_res := v_res || array[['TC03', 'Reporte recibido es visible para otros ciudadanos desde su recepción', '1 fila visible',
+                             v_n || ' fila visible', case when v_n = 1 then 'APROBADO' else 'FALLIDO' end]];
 
     -- === Actuar como visitante anónimo =================================
     perform set_config('request.jwt.claims', '{"role":"anon"}', true);
     perform set_config('role', 'anon', true);
-    select count(*) into v_n from public.reports where status not in ('validado', 'cerrado');
-    v_res := v_res || array[['TC03', 'Visitante solo ve reportes validados o cerrados', '0 no publicados visibles',
-                             v_n || ' no publicados visibles', case when v_n = 0 then 'APROBADO' else 'FALLIDO' end]];
+    select count(*) into v_n from public.reports where status = 'rechazado';
+    v_res := v_res || array[['TC03', 'Visitante no ve reportes rechazados', '0 rechazados visibles',
+                             v_n || ' rechazados visibles', case when v_n = 0 then 'APROBADO' else 'FALLIDO' end]];
 
     -- === Actuar como revisor ===========================================
     perform set_config('request.jwt.claims', json_build_object('sub', v_revisor, 'role', 'authenticated')::text, true);
     perform set_config('role', 'authenticated', true);
+
+    perform public.change_report_status(v_rech, 'rechazado', 'Prueba: la ubicación no corresponde a la vía pública.');
 
     begin
       perform public.change_report_status(v_report, 'cerrado', 'Intento de saltar etapas de revisión.');
@@ -185,6 +192,9 @@ begin
     select count(*) into v_n from public.reports where id = v_report;
     v_res := v_res || array[['TC03', 'Reporte validado aparece en la consulta pública', '1 fila visible',
                              v_n || ' fila visible', case when v_n = 1 then 'APROBADO' else 'FALLIDO' end]];
+    select count(*) into v_n from public.reports where id = v_rech;
+    v_res := v_res || array[['RNF02', 'Un reporte rechazado deja de ser público', '0 filas visibles',
+                             v_n || ' filas visibles', case when v_n = 0 then 'APROBADO' else 'FALLIDO' end]];
 
     -- === Actualizaciones ciudadanas (migración 003) =======================
     perform set_config('request.jwt.claims', json_build_object('sub', v_otro, 'role', 'authenticated')::text, true);

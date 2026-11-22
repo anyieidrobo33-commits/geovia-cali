@@ -29,7 +29,7 @@ export default function CommunityPage() {
   };
   useEffect(() => { load(); }, []);
 
-  const shown = useMemo(() => (items ?? []).filter((i) => filter === 'todo' || i.tipo === filter), [items, filter]);
+  const shown = useMemo(() => (items ?? []).filter((i) => filter === 'todo' || i.tipo === filter || (filter === 'reporte' && i.tipo === 'validacion')), [items, filter]);
   const nUpdates = (items ?? []).filter((i) => i.tipo === 'actualizacion').length;
 
   return (
@@ -37,7 +37,7 @@ export default function CommunityPage() {
       <div className="page-head">
         <div>
           <h1 className="row" style={{ gap: 10 }}><Users size={30} />Comunidad</h1>
-          <p>Últimos daños publicados y actualizaciones de ciudadanos en el sitio. ¿Pasa por uno? Cuéntenos cómo está hoy.</p>
+          <p>Lo último que reporta la ciudadanía, lo que verifican los revisores y las actualizaciones tomadas en el sitio. ¿Pasa por uno? Cuéntenos cómo está hoy.</p>
         </div>
         <button className="btn" onClick={load} aria-label="Actualizar el muro"><RefreshCw size={18} /></button>
       </div>
@@ -51,7 +51,7 @@ export default function CommunityPage() {
       {error && <div className="alert alert-danger" role="alert" style={{ marginBottom: 12 }}>{error}</div>}
       {items === null ? <Spinner label="Cargando la comunidad…" /> : shown.length === 0 ? (
         <CenterState icon={<MessagesSquare size={30} />} title="Aún no hay publicaciones">
-          <p>Cuando un reporte sea validado o alguien lo actualice, aparecerá aquí.</p>
+          <p>Cuando alguien reporte o actualice un daño, aparecerá aquí.</p>
           <Link to="/reportar" className="btn btn-primary">Reportar un daño</Link>
         </CenterState>
       ) : (
@@ -65,7 +65,7 @@ export default function CommunityPage() {
                 <header className="post-head">
                   <CategoryIcon code={cat.code} size={40} />
                   <div className="who">
-                    <b>{isUpdate ? 'Actualización ciudadana' : 'Nuevo daño publicado'} · {cat.name}</b>
+                    <b>{isUpdate ? 'Actualización ciudadana' : it.tipo === 'validacion' ? 'Verificado por un revisor' : 'Nuevo reporte ciudadano'} · {cat.name}</b>
                     <span><MapPin size={12} style={{ verticalAlign: '-1px' }} /> {it.sector || it.address || 'Cali'} · {fmtRelative(it.fecha)}</span>
                   </div>
                 </header>

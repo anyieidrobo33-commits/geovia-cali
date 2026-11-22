@@ -33,7 +33,7 @@ export default function AboutPage() {
         <li><b>Finalidad:</b> exclusivamente académica — registrar, visualizar, moderar y evaluar el funcionamiento del prototipo.</li>
         <li><b>Minimización:</b> reportar no exige cuenta ni datos personales. Las fotografías se procesan en su dispositivo y se eliminan sus metadatos (EXIF), incluida la ubicación GPS del teléfono.</li>
         <li><b>Seguridad:</b> conexiones cifradas (HTTPS), control de acceso por roles aplicado en la base de datos, fotografías en almacenamiento privado con enlaces temporales y contraseñas almacenadas con derivación criptográfica.</li>
-        <li><b>Publicación:</b> solo los reportes validados se muestran públicamente, sin identificar a quien reportó.</li>
+        <li><b>Publicación:</b> los reportes se muestran en el mapa desde que se reciben, marcados como «sin verificar» hasta que un revisor los valida, y nunca identifican a quien reportó. Los reportes rechazados se ocultan.</li>
         <li><b>Derechos:</b> puede conocer, actualizar, rectificar o solicitar la supresión de sus datos escribiendo al equipo del proyecto.</li>
         <li><b>Retención:</b> los datos se conservan durante el periodo académico de validación del prototipo.</li>
       </ul>

@@ -45,7 +45,7 @@ export default function HomePage() {
           <h2 id="cifras" className="sr-only">Cifras del prototipo</h2>
           <div className="stats">
             <div className="stat"><b>{stats ? stats.total : '—'}</b><span>Reportes registrados</span></div>
-            <div className="stat"><b>{stats ? stats.publicos : '—'}</b><span>Validados en el mapa</span></div>
+            <div className="stat"><b>{stats ? stats.publicos : '—'}</b><span>Verificados por revisores</span></div>
             <div className="stat"><b>{stats ? pend : '—'}</b><span>En cola de revisión</span></div>
             <div className="stat"><b>{stats ? stats.ultimos_7d : '—'}</b><span>Nuevos en 7 días</span></div>
           </div>

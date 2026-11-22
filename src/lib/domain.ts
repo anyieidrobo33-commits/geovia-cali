@@ -50,7 +50,10 @@ export const STATUSES: StatusMeta[] = [
 export const statusMeta = (code: string): StatusMeta =>
   STATUSES.find((s) => s.code === code) ?? STATUSES[0];
 
+/** Estados verificados por un revisor (marcador sólido en el mapa). */
 export const PUBLIC_STATUSES: ReportStatus[] = ['validado', 'cerrado'];
+/** Todo reporte es público desde su recepción, salvo los rechazados. */
+export const isPubliclyVisible = (s: ReportStatus) => s !== 'rechazado';
 
 /** Tabla 7.2 de la especificación: transiciones autorizadas (espejo de status_transitions). */
 export const TRANSITIONS: Record<ReportStatus, ReportStatus[]> = {

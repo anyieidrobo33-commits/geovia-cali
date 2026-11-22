@@ -258,7 +258,7 @@ export async function submitUpdate(p: {
 }
 
 export interface FeedItem {
-  tipo: 'reporte' | 'actualizacion';
+  tipo: 'reporte' | 'validacion' | 'actualizacion';
   fecha: string;
   report_id: string;
   code: string;

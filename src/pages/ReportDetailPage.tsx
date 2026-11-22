@@ -6,7 +6,7 @@ import {
   fetchHistory, fetchReportByCode, fetchReportCodeById, fetchUpdates, signedPhotoUrls, trackByCode, type ReportUpdate,
   type HistoryEntry, type PublicTracking, type Report,
 } from '../lib/api';
-import { categoryMeta, PUBLIC_STATUSES, SEVERITIES, statusMeta } from '../lib/domain';
+import { categoryMeta, isPubliclyVisible, SEVERITIES, statusMeta } from '../lib/domain';
 import { fmtCoord, fmtDateTime, fmtRelative } from '../lib/format';
 import { friendlyError } from '../lib/supabase';
 import { categoryPin, TILE_ATTRIBUTION, TILE_URL } from '../components/mapIcons';
@@ -126,10 +126,9 @@ export default function ReportDetailPage() {
             </section>
           ) : (
             <section className="card card-pad">
-              <div className="row" style={{ gap: 8 }}><Lock size={18} color="var(--ink-3)" /><b>Detalle reservado</b></div>
+              <div className="row" style={{ gap: 8 }}><Lock size={18} color="var(--ink-3)" /><b>Reporte no público</b></div>
               <p className="muted small" style={{ margin: '6px 0 0' }}>
-                Este reporte aún no es público. Solo su autor (desde el dispositivo o la cuenta con que lo envió) y los revisores ven la descripción,
-                la ubicación y las fotografías. El historial de estados sí es consultable con el código.
+                Este reporte fue rechazado por los revisores y no se muestra al público. Solo su autor y los revisores ven el detalle; el historial de estados, con el motivo, sí es consultable con el código.
               </p>
             </section>
           )}
@@ -169,7 +168,7 @@ export default function ReportDetailPage() {
 
         <div className="stack" style={{ gap: 16 }}>
           {isStaff && report && <ReviewActions report={report} onChanged={load} />}
-          {report && PUBLIC_STATUSES.includes(report.status) && (
+          {report && isPubliclyVisible(report.status) && (
             <section className="card card-pad stack" id="actualizaciones">
               <div className="card-title"><Users size={20} color="var(--navy)" /><h2 style={{ fontSize: '1.15rem' }}>Actualizaciones ciudadanas</h2></div>
               <p className="small muted" style={{ margin: 0 }}>¿Está cerca de este daño? Confirme con una foto tomada en el sitio cómo está hoy.</p>
