@@ -39,6 +39,12 @@ export default function AboutPage() {
       </ul>
       <p>Evite incluir en fotos o descripciones rostros, placas vehiculares u otra información que identifique a personas.</p>
 
+      <h2>Equipo</h2>
+      <ul>
+        <li><b>Cristian Camilo Alvarado Cardona</b> — Ingeniería de Sistemas, UNAD</li>
+        <li><b>Anyie Tatiana Idrobo García</b> — Ingeniería de Sistemas, UNAD</li>
+      </ul>
+
       <h2>Tecnología</h2>
       <p>
         React + TypeScript + Vite · Leaflet con cartografía de OpenStreetMap · Supabase (PostgreSQL + PostGIS, autenticación,

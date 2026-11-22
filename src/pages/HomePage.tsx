@@ -104,7 +104,7 @@ export default function HomePage() {
             <div>
               <p><b>GeoVía Cali es un prototipo académico</b> (Ingeniería de Sistemas, UNAD). No reemplaza los canales oficiales de la Alcaldía
                 ni garantiza reparaciones. Para reportes oficiales use los canales de la Secretaría de Infraestructura. Ante una emergencia, llame al <b>123</b>.</p>
-              <p className="row small" style={{ gap: 6 }}><ShieldCheck size={16} />Sus datos se tratan conforme a la Ley 1581 de 2012. <Link to="/acerca">Ver política de privacidad</Link></p>
+              <p className="row small" style={{ gap: 6 }}><ShieldCheck size={16} />Sus datos se tratan conforme a la Ley 1581 de 2012. <Link to="/acerca">Ver política de privacidad</Link> · <Link to="/ayuda">Centro de ayuda</Link></p>
             </div>
           </div>
         </section>

@@ -1,91 +1,334 @@
-<p align="center"><img src="public/icons/icon-192.png" width="96" alt="GeoVía Cali"></p>
+<p align="center">
+  <img src="public/icons/icon-192.png" width="110" alt="GeoVía Cali">
+</p>
 
 <h1 align="center">GeoVía Cali</h1>
-<p align="center"><i>Cada reporte, una ubicación; cada cambio, una historia.</i></p>
 
-Prototipo funcional **TRL 5** de una plataforma web georreferenciada e instalable (PWA) para **registrar, clasificar, visualizar y hacer seguimiento** a reportes ciudadanos de afectaciones de la malla vial de Santiago de Cali.
+<p align="center">
+  <b>Reporte ciudadano y seguimiento de afectaciones de la malla vial de Santiago de Cali</b><br>
+  <i>Cada reporte, una ubicación; cada cambio, una historia.</i>
+</p>
 
-Proyecto de grado · Ingeniería de Sistemas · Universidad Nacional Abierta y a Distancia (UNAD) · Metodología CDIO.
+<p align="center">
+  <img alt="Versión" src="https://img.shields.io/badge/versión-1.1.0-003163">
+  <img alt="TRL" src="https://img.shields.io/badge/madurez-TRL%205-2f7a12">
+  <img alt="PWA" src="https://img.shields.io/badge/PWA-instalable-fea600">
+  <img alt="Licencia" src="https://img.shields.io/badge/licencia-MIT-lightgrey">
+</p>
 
-> Prototipo académico. No es un canal oficial de la Alcaldía de Santiago de Cali ni garantiza reparaciones.
+<p align="center">
+  <a href="#-qué-es">Qué es</a> ·
+  <a href="#-funcionalidades">Funcionalidades</a> ·
+  <a href="#-capturas">Capturas</a> ·
+  <a href="#-arquitectura">Arquitectura</a> ·
+  <a href="#-puesta-en-marcha">Puesta en marcha</a> ·
+  <a href="#-pruebas">Pruebas</a> ·
+  <a href="#-documentación">Documentación</a> ·
+  <a href="#-autores">Autores</a>
+</p>
 
-## Funcionalidades
+---
 
-| Módulo | Descripción | Req. |
+## 📍 Qué es
+
+**GeoVía Cali** es una aplicación web progresiva (PWA), instalable en el celular, para que cualquier persona **reporte huecos, grietas, hundimientos y otros daños visibles de las vías de Cali** con su ubicación exacta y una fotografía, y **haga seguimiento** a cada reporte con un código, sin necesidad de crear una cuenta.
+
+Del otro lado, un equipo de **revisores** modera los reportes (los valida, detecta duplicados o los rechaza). Cada decisión queda en una **bitácora inmutable** con fecha, rol y motivo. Los reportes validados se publican en un **mapa abierto** que muestra dónde se concentran las afectaciones.
+
+### El problema
+
+Los reportes sobre el estado de las vías suelen llegar dispersos por redes sociales, llamadas o mensajes, sin un formato común, sin ubicación precisa y sin forma de saber qué pasó con ellos. GeoVía Cali propone **un solo formato estandarizado, georreferenciado, con evidencia y trazable** de principio a fin.
+
+### Alcance
+
+GeoVía Cali es un proyecto de grado de Ingeniería de Sistemas (UNAD), desarrollado con la metodología **CDIO**. El prototipo alcanza el nivel de madurez tecnológica **TRL 5**: está validado en un entorno relevante, con despliegue real en internet, uso en celulares y reportes tomados en campo en Cali.
+
+> **No es un canal oficial de la Alcaldía de Santiago de Cali** ni garantiza reparaciones. El estado *Validado* indica que el registro es consistente, no que haya habido una inspección técnica.
+
+---
+
+## ✨ Funcionalidades
+
+### Para la ciudadanía
+
+| | Funcionalidad | Detalle |
 |---|---|---|
-| Reporte ciudadano | Asistente de 4 pasos: ubicación por GPS o mapa (arrastrable), categoría, severidad orientativa, descripción, 1–3 fotos y consentimiento. Sin cuenta obligatoria (sesión anónima). | RF01, RF02, RF09 |
-| Fotografías | Comprimidas en el dispositivo (máx. 1600 px) y **sin metadatos EXIF** (se elimina la ubicación GPS del teléfono). Bucket privado con URLs firmadas. | RF02, RNF02 |
-| Mapa público | Marcadores por categoría (forma + ícono + color), filtros por tipo/estado/fecha/barrio, vista de lista alternativa, ubicación del usuario. | RF03, RF04, RNF04 |
-| Duplicados | Aviso de reportes a menos de 30 m con PostGIS `ST_DWithin`. | RF07 |
-| Seguimiento | Código legible `GVC-AAMM-XXXXX`, ficha con fotos, mini-mapa e historial de estados. | RF05 |
-| Moderación | Panel de revisor: cola FIFO, indicadores, matriz de transiciones, motivo obligatorio, vinculación de duplicados. | RF06, RF10 |
-| Bitácora | Cada cambio registra estado anterior/nuevo, rol, autor, fecha y motivo. Inmutable. | RF10, RNF05 |
-| Exportación | CSV sin datos personales, compatible con Excel, protegido contra inyección de fórmulas. | RF08 |
-| Roles | Visitante, ciudadano, revisor académico y administrador técnico (gestión de roles desde la app). | RNF01 |
-| PWA | Instalable en Android e iPhone (ícono en la pantalla de inicio), caché sin conexión, borrador del reporte guardado localmente. | RNF08 |
+| 📝 | **Reporte en 4 pasos** | Ubicación → tipo y descripción → fotos → revisar y enviar. Sin cuenta, en menos de 2 minutos. |
+| 📍 | **Ubicación precisa** | GPS del celular con indicador de precisión, o toque en el mapa con marcador arrastrable. Sugiere dirección y barrio (OpenStreetMap). |
+| ⚠️ | **Aviso de duplicados** | Antes de enviar, advierte si ya existe un reporte a menos de 30 m (consulta espacial con PostGIS). |
+| 📷 | **Fotos privadas y livianas** | 1 a 3 fotos con la cámara o la galería. Se comprimen en el teléfono y **se eliminan los metadatos EXIF** (ubicación GPS y modelo del teléfono). |
+| 🔎 | **Seguimiento por código** | Código legible `GVC-AAMM-XXXXX`, ficha con fotos, mapa e **historial de estados**. |
+| 🗺️ | **Mapa público** | Marcadores por tipo (color + ícono + forma), filtros por tipo, estado, fecha y barrio, y vista de lista accesible. |
+| 💾 | **Funciona con mala señal** | El borrador se guarda en el dispositivo y la app abre sin conexión. |
+| 📲 | **Instalable** | Ícono en la pantalla de inicio de Android e iPhone, pantalla completa y accesos directos. |
+| ❓ | **Centro de ayuda** | Guía rápida, significado de cada estado y preguntas frecuentes dentro de la app. |
 
-## Arquitectura
+### Para revisores y administración
+
+| | Funcionalidad | Detalle |
+|---|---|---|
+| 📊 | **Panel de revisión** | Indicadores, gráficas por tipo y estado, cola de pendientes del más antiguo al más reciente, búsqueda y filtros. |
+| ✅ | **Moderación guiada** | Solo se ofrecen las transiciones de estado permitidas, con motivo obligatorio y motivos sugeridos. Los duplicados se vinculan al reporte principal. |
+| 🧾 | **Bitácora inmutable** | Cada cambio registra estado anterior y nuevo, autor, rol, fecha y motivo. No se puede editar ni borrar. |
+| 📤 | **Exportación CSV** | Sin datos personales, compatible con Excel (UTF-8) y protegida contra inyección de fórmulas. |
+| 👥 | **Gestión de roles** | El administrador asigna revisores desde la app. |
+
+### Requisitos cubiertos
+
+| Requisito | Descripción | Dónde se cumple |
+|---|---|---|
+| RF01 | Registrar reporte georreferenciado | `ReportPage`, `submit_report` |
+| RF02 | Adjuntar evidencia fotográfica válida | `lib/image.ts`, bucket privado `evidencias` |
+| RF03 | Visualizar reportes en mapa | `MapPage`, política RLS de lectura pública |
+| RF04 | Filtrar por tipo, estado, fecha y sector | `MapPage`, `PanelPage` |
+| RF05 | Consultar ficha e historial | `ReportDetailPage`, `get_report_by_code` |
+| RF06 | Moderar según rol | `ReviewActions`, `change_report_status` |
+| RF07 | Advertir posibles duplicados | `nearby_reports` (PostGIS `ST_DWithin`) |
+| RF08 | Exportar sin datos personales | `lib/csv.ts` |
+| RF09 | Validar campos y coordenadas | `lib/domain.ts` y restricciones SQL |
+| RF10 | Bitácora de cambios | `status_history` (inmutable) |
+
+---
+
+## 📸 Capturas
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/img/01-inicio.png" width="200"><br><sub>Inicio</sub></td>
+    <td align="center"><img src="docs/img/02-mapa.png" width="200"><br><sub>Mapa público</sub></td>
+    <td align="center"><img src="docs/img/06-reportar-ubicacion.png" width="200"><br><sub>Reportar · ubicación</sub></td>
+    <td align="center"><img src="docs/img/08-reportar-fotos.png" width="200"><br><sub>Reportar · fotos</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/img/10-confirmacion.png" width="200"><br><sub>Código de seguimiento</sub></td>
+    <td align="center"><img src="docs/img/12-ficha-reporte.png" width="200"><br><sub>Ficha del reporte</sub></td>
+    <td align="center"><img src="docs/img/13-ficha-historial.png" width="200"><br><sub>Historial de estados</sub></td>
+    <td align="center"><img src="docs/img/16-ayuda.png" width="200"><br><sub>Centro de ayuda</sub></td>
+  </tr>
+</table>
+
+<p align="center"><img src="docs/img/20-panel.png" width="820"><br><sub>Panel de revisión</sub></p>
+<p align="center"><img src="docs/img/21-moderacion.png" width="820"><br><sub>Moderación de un reporte de campo</sub></p>
+
+---
+
+## 🏗️ Arquitectura
 
 ```
-┌───────────────────────────┐      HTTPS       ┌──────────────────────────────────────────┐
-│  Presentación (PWA)       │ ───────────────▶ │  Supabase                                │
-│  React + TypeScript +     │                  │  ├─ Auth (anónimo + correo/contraseña)    │
-│  Vite · Leaflet (OSM)     │   supabase-js    │  ├─ PostgREST + RPC (lógica en servidor)  │
-│  Service worker (Workbox) │ ◀─────────────── │  ├─ PostgreSQL 16 + PostGIS (geography)   │
-└───────────────────────────┘                  │  ├─ Row Level Security por rol            │
-          Vercel (CDN)                         │  └─ Storage privado (URLs firmadas)       │
-                                               └──────────────────────────────────────────┘
+┌────────────────────────────────┐            ┌─────────────────────────────────────────────┐
+│  Cliente · PWA                 │   HTTPS    │  Supabase (backend como servicio)           │
+│  React 19 + TypeScript + Vite  │ ─────────▶ │  ├─ Auth: sesión anónima y correo/clave     │
+│  Leaflet + OpenStreetMap       │ supabase-js│  ├─ API REST (PostgREST) + funciones RPC    │
+│  Service worker (Workbox)      │ ◀───────── │  ├─ PostgreSQL 16 + PostGIS (geography)     │
+│  Procesamiento de fotos local  │            │  ├─ Row Level Security por rol              │
+└────────────────────────────────┘            │  └─ Storage privado con URLs firmadas       │
+        Vercel (CDN, HTTPS)                   └─────────────────────────────────────────────┘
 ```
 
-- **Toda escritura pasa por funciones RPC auditadas** (`submit_report`, `change_report_status`): no existen políticas de INSERT/UPDATE/DELETE directas sobre los reportes.
-- Las reglas se aplican en el servidor y se replican en la interfaz para dar retroalimentación inmediata; las pruebas verifican que ambas coincidan.
+**Decisiones de diseño**
+
+- **Seguridad en el servidor, no en la interfaz.** No hay políticas de INSERT, UPDATE ni DELETE directas sobre los reportes: toda escritura pasa por funciones RPC (`submit_report`, `change_report_status`) que validan el rol, la matriz de transiciones, el motivo, la ubicación y la propiedad de las fotos. La interfaz replica las reglas solo para dar retroalimentación inmediata.
+- **Mínimos datos personales.** Reportar no exige cuenta: se usa una sesión anónima de Supabase. El mapa público no expone al autor.
+- **Datos geoespaciales nativos.** Las ubicaciones se guardan como `geography(Point, 4326)` con índice GiST, y la búsqueda de duplicados usa `ST_DWithin` en metros.
+- **Trazabilidad.** `status_history` es de solo inserción, y un disparador bloquea cualquier modificación.
 
 ### Modelo de datos
 
-`profiles` (rol) · `categories` (catálogo) · `reports` (geom `geography(Point,4326)`) · `report_photos` · `status_history` (bitácora) · `status_transitions` (matriz 7.2).
+| Tabla | Propósito |
+|---|---|
+| `profiles` | Rol de cada usuario (`ciudadano`, `revisor`, `admin`) y si la sesión es anónima |
+| `categories` | Catálogo controlado de 8 tipos de afectación |
+| `reports` | Reporte: código, categoría, severidad, descripción, ubicación (`geom`), dirección, sector, estado, duplicado de, consentimiento |
+| `report_photos` | Rutas de las fotos en el bucket privado |
+| `status_history` | Bitácora inmutable de estados |
+| `status_transitions` | Matriz de transiciones autorizadas |
+
+### Ciclo de vida de un reporte
+
+```
+                 ┌──────────────┐
+  Ciudadano ───▶ │   Recibido   │──────────────┐
+                 └──────┬───────┘              │
+                        ▼                      ▼
+                 ┌──────────────┐       ┌──────────────┐
+                 │ En revisión  │──────▶│  Rechazado   │
+                 └──┬────────┬──┘       └──────────────┘
+                    ▼        ▼
+          ┌──────────────┐ ┌──────────────┐
+          │   Validado   │ │  Duplicado   │   (todos pueden volver a
+          └──────┬───────┘ └──────┬───────┘    «En revisión» con motivo)
+                 ▼                ▼
+               ┌────────────────────┐
+               │       Cerrado      │
+               └────────────────────┘
+```
 
 ### Estructura del repositorio
 
 ```
-src/
-  pages/        Pantallas (inicio, mapa, reportar, seguimiento, panel, cuenta…)
-  components/   Componentes reutilizables (selector de ubicación, bitácora, moderación…)
-  lib/          Dominio, servicios Supabase, imágenes, geocodificación, CSV
-  context/      Sesión y notificaciones
-supabase/
-  migrations/   001 esquema + seguridad · 002 datos de demostración
-  tests/        Batería SQL de reglas y seguridad
-tests/          Pruebas unitarias (Vitest)
-docs/           Guía de despliegue, plan de pruebas y guion del video
+geovia-cali/
+├── src/
+│   ├── pages/            Pantallas: inicio, mapa, reportar, seguimiento, ficha,
+│   │                     mis reportes, cuenta, panel, usuarios, ayuda, acerca
+│   ├── components/       Selector de ubicación, bitácora, moderación, íconos del mapa…
+│   ├── lib/              Reglas de dominio, servicios Supabase, fotos, geocodificación, CSV
+│   ├── context/          Sesión y notificaciones
+│   └── hooks/            Instalación de la PWA y estado de conexión
+├── supabase/
+│   ├── migrations/       001 esquema y seguridad · 002 datos de demostración
+│   ├── seed/reportes_campo/  9 reportes reales de campo (fotos + datos)
+│   └── tests/            Batería SQL de reglas y seguridad
+├── scripts/              Cargador de reportes de campo
+├── tests/                Pruebas unitarias (Vitest)
+├── docs/                 Manual de usuario, guía de despliegue, plan de pruebas
+└── public/               Íconos de la app
 ```
 
-## Ejecución local
+### Tecnologías
+
+| Capa | Tecnología |
+|---|---|
+| Interfaz | React 19, TypeScript 5, Vite 7, React Router 7, Lucide |
+| Mapas | Leaflet 1.9 + React Leaflet, mosaicos de OpenStreetMap, geocodificación inversa con Nominatim |
+| PWA | vite-plugin-pwa (Workbox): manifiesto, service worker, caché de mosaicos |
+| Backend | Supabase: PostgreSQL 16, PostGIS 3, Auth, Storage, PostgREST |
+| Calidad | Vitest, pruebas SQL, GitHub Actions |
+| Despliegue | Vercel |
+
+---
+
+## 🚀 Puesta en marcha
+
+### Requisitos
+
+- Node.js 20 o superior
+- Una cuenta gratuita en [Supabase](https://supabase.com) y otra en [Vercel](https://vercel.com)
+
+### 1. Base de datos (Supabase)
+
+En **SQL Editor** ejecute, en orden:
+
+1. `supabase/migrations/001_esquema_geovia.sql`: tablas, PostGIS, RLS, funciones, bitácora y bucket.
+2. `supabase/migrations/002_datos_demostracion.sql` (opcional): 28 registros simulados, marcados como *Dato de demostración*.
+
+Luego, en **Authentication → Sign In / Providers**, active **Allow anonymous sign-ins**.
+
+### 2. Ejecución local
 
 ```bash
+git clone https://github.com/<usuario>/geovia-cali.git
+cd geovia-cali
 npm install
-cp .env.example .env.local   # complete con los datos de su proyecto Supabase
-npm run dev                  # http://localhost:5173
-npm test                     # pruebas unitarias
-npm run build                # compilación de producción
+cp .env.example .env.local     # VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY
+npm run dev                    # http://localhost:5173
 ```
 
-El despliegue completo (Supabase + Vercel + administrador + instalación en el celular) está en **[docs/GUIA_DESPLIEGUE.md](docs/GUIA_DESPLIEGUE.md)**.
+### 3. Cargar los reportes de campo
 
-## Pruebas y evidencia TRL 5
+Los 9 reportes del registro fotográfico de campo se envían **como ciudadanos sin cuenta**: cada uno abre su propia sesión anónima, sube la foto y se registra con las mismas validaciones de la app.
 
-- **27 pruebas unitarias** (validaciones, matriz de transiciones sincronizada con SQL, contraste WCAG, exportación sin datos personales).
-- **17 casos SQL** de reglas y seguridad (registro válido, validaciones, permisos por rol, RLS, bitácora inmutable, duplicados).
-- **GitHub Actions** ejecuta ambas baterías en cada cambio (PostgreSQL + PostGIS reales).
-- Casos funcionales TC01–TC10 y sesiones de usabilidad: **[docs/PLAN_DE_PRUEBAS.md](docs/PLAN_DE_PRUEBAS.md)**.
+```bash
+npm run cargar:reportes -- --prueba   # valida archivos y datos sin enviar nada
+npm run cargar:reportes               # envía los 9 reportes
+```
 
-## Privacidad y seguridad
+Quedan en estado **Recibido**, listos para que un revisor los valide desde el panel. El script es idempotente: no duplica reportes si se ejecuta de nuevo.
 
-Ley 1581 de 2012: consentimiento explícito, minimización (reportar no requiere datos personales), eliminación de EXIF, publicación solo de reportes validados sin identificar al autor, bucket privado, contraseñas con derivación criptográfica (Supabase Auth), RLS y límite de 10 reportes por hora por sesión.
+| # | Tipo | Ubicación | Sector |
+|---|---|---|---|
+| 1 | Desgaste de la capa | Avenida 4 Norte | Vipasa (Comuna 2) |
+| 2 | Tapa o sumidero dañado | Carrera 7 | La Esmeralda (Comuna 4) |
+| 3 | Hueco o bache | Carrera 6 | Porvenir (Comuna 4) |
+| 4 | Desgaste de la capa | Carrera 4B | Porvenir (Comuna 4) |
+| 5 | Hueco o bache | Calle 30 Norte | Santa Mónica Residencial (Comuna 2) |
+| 6 | Hueco o bache | Avenida 6 Norte | El Bosque (Comuna 2) |
+| 7 | Hueco o bache | Calle 50 Norte | La Flora (Comuna 2) |
+| 8 | Señalización vial borrada | Calle 52 Norte | Rincón de La Flora (Comuna 2) |
+| 9 | Tapa o sumidero dañado | Carrera 8A | Barrio Obrero (Comuna 9) |
 
-## Trabajo futuro
+### 4. Publicación
 
-Empaquetado Android con Capacitor (APK/AAB) y publicación en Google Play · notificaciones de cambio de estado · capa de comunas oficiales (Datos Abiertos Cali) · proveedor de mosaicos con clave para alto tráfico · integración con procesos institucionales.
+Importe el repositorio en Vercel, defina `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` y `VITE_REPO_URL`, y despliegue. La guía completa, con la creación del administrador, está en **[docs/GUIA_DESPLIEGUE.md](docs/GUIA_DESPLIEGUE.md)**.
 
-## Créditos
+### Scripts disponibles
 
-Cartografía © colaboradores de OpenStreetMap. Geocodificación inversa: Nominatim. Íconos: Lucide.
+| Comando | Acción |
+|---|---|
+| `npm run dev` | Servidor de desarrollo |
+| `npm run build` | Verificación de tipos y compilación de producción |
+| `npm run preview` | Sirve la compilación localmente |
+| `npm test` | Pruebas unitarias |
+| `npm run typecheck` | Solo verificación de tipos |
+| `npm run cargar:reportes` | Carga los reportes de campo como ciudadanos sin cuenta |
+
+---
+
+## 🧪 Pruebas
+
+| Nivel | Cantidad | Qué verifica |
+|---|---|---|
+| Unitarias (Vitest) | 27 | Validaciones, fotos, matriz de transiciones **sincronizada con el SQL**, catálogo, contraste WCAG ≥ 4.5:1, Haversine, códigos, CSV sin datos personales |
+| Reglas y seguridad (SQL) | 17 | Registro válido, validaciones del servidor, fotos ajenas, permisos por rol, RLS (visitante y otro ciudadano), transiciones, motivo obligatorio, bitácora inmutable, duplicados |
+| Integración continua | 2 trabajos | GitHub Actions ejecuta ambas baterías en cada cambio, con PostgreSQL + PostGIS reales |
+| Funcionales y usabilidad | TC01–TC10 | En la app publicada y en celulares: **[docs/PLAN_DE_PRUEBAS.md](docs/PLAN_DE_PRUEBAS.md)** |
+
+```bash
+npm test                                                     # 27 pruebas
+# En Supabase → SQL Editor: supabase/tests/pruebas_seguridad_y_reglas.sql   → 17 APROBADO
+```
+
+---
+
+## 🔒 Privacidad y seguridad
+
+Diseñada conforme a la **Ley 1581 de 2012** (protección de datos personales en Colombia):
+
+- **Consentimiento explícito** antes de enviar cada reporte.
+- **Minimización**: no se requiere cuenta ni datos personales para reportar.
+- **Fotos sin metadatos**: se elimina el EXIF (GPS, dispositivo) en el propio teléfono.
+- **Publicación anónima**: el mapa y la exportación no identifican al autor.
+- **Control de acceso** aplicado en la base de datos (RLS) y en funciones RPC con verificación de rol.
+- **Almacenamiento privado** de fotos con URLs firmadas de una hora.
+- **Antiabuso**: máximo 10 reportes por hora por sesión y validación de que cada foto pertenezca a quien reporta.
+- **Cabeceras de seguridad** en Vercel (`nosniff`, `X-Frame-Options`, `Permissions-Policy`).
+
+---
+
+## 📚 Documentación
+
+| Documento | Para quién |
+|---|---|
+| **[Manual de usuario](docs/MANUAL_DE_USUARIO.md)** | Ciudadanía, revisores y administrador: uso de cada pantalla, con capturas |
+| **[Guía de despliegue](docs/GUIA_DESPLIEGUE.md)** | Equipo técnico: Supabase, GitHub, Vercel, administrador y reportes de campo |
+| **[Plan de pruebas](docs/PLAN_DE_PRUEBAS.md)** | Trazabilidad requisito → prueba y registro de casos TC01–TC10 |
+| **[Registro de cambios](CHANGELOG.md)** | Historial de versiones |
+
+---
+
+## 🛣️ Hoja de ruta
+
+- [x] Reporte ciudadano georreferenciado con evidencia fotográfica
+- [x] Mapa público, filtros y seguimiento por código
+- [x] Moderación con bitácora inmutable y exportación
+- [x] PWA instalable y uso con conectividad intermitente
+- [x] Reportes reales de campo en Cali
+- [ ] Empaquetado Android con Capacitor (APK/AAB) y publicación en Google Play
+- [ ] Notificaciones de cambio de estado
+- [ ] Capa oficial de comunas y barrios (Datos Abiertos de Cali)
+- [ ] CAPTCHA invisible para sesiones anónimas y proveedor de mosaicos con clave para alto tráfico
+- [ ] Articulación con procesos institucionales de mantenimiento vial
+
+---
+
+## 👩‍💻 Autores
+
+| | Nombre | Programa |
+|---|---|---|
+| 👤 | **Cristian Camilo Alvarado Cardona** | Ingeniería de Sistemas · UNAD |
+| 👤 | **Anyie Tatiana Idrobo García** | Ingeniería de Sistemas · UNAD |
+
+Universidad Nacional Abierta y a Distancia (UNAD) · Escuela de Ciencias Básicas, Tecnología e Ingeniería · Proyecto de grado, 2026.
+
+## 📄 Licencia y créditos
+
+Código bajo licencia **[MIT](LICENSE)**. Cartografía © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright) (ODbL). Geocodificación: Nominatim. Íconos: Lucide (ISC). Las fotografías de `supabase/seed/reportes_campo` son de los autores.

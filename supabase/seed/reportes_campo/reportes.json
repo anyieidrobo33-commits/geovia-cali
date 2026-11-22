@@ -1,0 +1,110 @@
+[
+  {
+    "foto": "reporte-01.jpg",
+    "lat": 3.481927,
+    "lng": -76.521378,
+    "categoria": "desgaste",
+    "severidad": "media",
+    "direccion": "Avenida 4 Norte",
+    "sector": "Vipasa (Comuna 2)",
+    "descripcion": "Desprendimiento de la capa asfáltica en el carril derecho, junto a la línea de borde; el material superficial está suelto y hay fisuras alrededor.",
+    "referencia": null,
+    "plus_code": "FFJH+QCH"
+  },
+  {
+    "foto": "reporte-02.jpg",
+    "lat": 3.457002,
+    "lng": -76.511818,
+    "categoria": "alcantarilla",
+    "severidad": "media",
+    "direccion": "Carrera 7",
+    "sector": "La Esmeralda (Comuna 4)",
+    "descripcion": "Tapa de alcantarilla con reparación deteriorada y bordes fracturados; el parche que la rodea está hundido y acumula agua.",
+    "referencia": null,
+    "plus_code": "FF4Q+R73"
+  },
+  {
+    "foto": "reporte-03.jpg",
+    "lat": 3.457619,
+    "lng": -76.513847,
+    "categoria": "hueco",
+    "severidad": "alta",
+    "direccion": "Carrera 6",
+    "sector": "Porvenir (Comuna 4)",
+    "descripcion": "Bache con bordes rotos en el carril de circulación, en una zona de alto flujo de buses y vehículos de carga; obliga a desviarse.",
+    "referencia": null,
+    "plus_code": "FF5P+2FR"
+  },
+  {
+    "foto": "reporte-04.jpg",
+    "lat": 3.459693,
+    "lng": -76.51413,
+    "categoria": "desgaste",
+    "severidad": "alta",
+    "direccion": "Carrera 4B",
+    "sector": "Porvenir (Comuna 4)",
+    "descripcion": "Pérdida generalizada de la capa de rodadura en toda la calzada: agregado suelto, grietas y baches pequeños a lo largo de la vía.",
+    "referencia": null,
+    "plus_code": "FF5P+V8H"
+  },
+  {
+    "foto": "reporte-05.jpg",
+    "lat": 3.472335,
+    "lng": -76.527466,
+    "categoria": "hueco",
+    "severidad": "media",
+    "direccion": "Calle 30 Norte",
+    "sector": "Santa Mónica Residencial (Comuna 2)",
+    "descripcion": "Bache junto al borde de la calzada con empozamiento de agua; afecta especialmente a las motos que giran o se estacionan en la esquina.",
+    "referencia": "Frente a Office Depot",
+    "plus_code": "FFCF+W2M"
+  },
+  {
+    "foto": "reporte-06.jpg",
+    "lat": 3.483851,
+    "lng": -76.526466,
+    "categoria": "hueco",
+    "severidad": "media",
+    "direccion": "Avenida 6 Norte",
+    "sector": "El Bosque (Comuna 2)",
+    "descripcion": "Parche asfáltico fracturado y hundido, con material suelto en los bordes; se siente el golpe al pasar en vehículo.",
+    "referencia": "Cerca de Pan Norte",
+    "plus_code": "FFMF+GCV"
+  },
+  {
+    "foto": "reporte-07.jpg",
+    "lat": 3.488024,
+    "lng": -76.525024,
+    "categoria": "hueco",
+    "severidad": "alta",
+    "direccion": "Calle 50 Norte",
+    "sector": "La Flora (Comuna 2)",
+    "descripcion": "Hueco amplio con la base granular expuesta y bordes desprendidos a lo largo del carril; representa riesgo para motos y bicicletas.",
+    "referencia": null,
+    "plus_code": "FFQF+6X5"
+  },
+  {
+    "foto": "reporte-08.jpg",
+    "lat": 3.485983,
+    "lng": -76.517204,
+    "categoria": "senalizacion",
+    "severidad": "media",
+    "direccion": "Calle 52 Norte",
+    "sector": "Rincón de La Flora (Comuna 2)",
+    "descripcion": "Demarcación del paso peatonal desgastada en la intersección semaforizada, con fisuras en la calzada; es poco visible de noche.",
+    "referencia": "Intersección semaforizada, frente a la droguería",
+    "plus_code": "FFPM+94V"
+  },
+  {
+    "foto": "reporte-09.jpg",
+    "lat": 3.451909,
+    "lng": -76.519211,
+    "categoria": "alcantarilla",
+    "severidad": "baja",
+    "direccion": "Carrera 8A",
+    "sector": "Barrio Obrero (Comuna 9)",
+    "descripcion": "Tapa de alcantarilla rodeada por un parche irregular y desnivelado respecto a la calzada.",
+    "referencia": null,
+    "plus_code": "FF2J+Q87"
+  }
+]

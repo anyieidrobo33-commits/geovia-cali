@@ -93,7 +93,7 @@ export default function MapPage() {
         {filtered.map((r) => (
           <Marker key={r.id} position={[r.lat, r.lng]} icon={categoryPin(r.category_code, r.status)}
             title={`${categoryMeta(r.category_code).name} · ${r.sector ?? r.code}`} keyboard>
-            <Popup>
+            <Popup autoPanPaddingTopLeft={[12, 78]} autoPanPaddingBottomRight={[12, 24]}>
               <div className="popup-title"><CategoryIcon code={r.category_code} size={26} />{categoryMeta(r.category_code).name}</div>
               <div className="row" style={{ gap: 6 }}>
                 <StatusBadge status={r.status} />

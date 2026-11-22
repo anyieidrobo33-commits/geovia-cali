@@ -79,7 +79,27 @@ update public.profiles set role = 'admin'
 
 ---
 
-## 5. Instalar la app en el celular (1 min)
+## 5. Cargar los reportes de campo (3 min)
+
+Los 9 reportes del registro fotográfico de campo (`supabase/seed/reportes_campo/`) se envían como **ciudadanos sin cuenta**. Cada uno abre su propia sesión anónima, sube su foto y se registra con `submit_report`, igual que en la app.
+
+1. En el computador, dentro de la carpeta del proyecto, cree `.env.local` con `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` (ver `.env.example`).
+2. Ejecute:
+
+```bash
+npm install
+npm run cargar:reportes -- --prueba   # valida sin enviar
+npm run cargar:reportes               # envía los 9 reportes
+```
+
+3. La consola muestra el código de cada reporte (`✓ 03 · hueco · Porvenir (Comuna 4): GVC-2611-XXXXX`).
+4. Ingrese como revisor → **Panel → Pendientes** y valide los reportes (Pasar a revisión → Validar). Al validarlos aparecen en el mapa público.
+
+> Requiere *Allow anonymous sign-ins* activado. Supabase permite por defecto 30 sesiones anónimas por hora por dirección IP; el script usa 9. Si lo ejecuta de nuevo, omite los que ya existen.
+
+---
+
+## 6. Instalar la app en el celular (1 min)
 
 - **Android (Chrome):** abra la URL → botón **Instalar app** o menú ⋮ → **Instalar aplicación**.
 - **iPhone (Safari):** botón **Compartir** → **Agregar a pantalla de inicio**.
@@ -88,10 +108,10 @@ El ícono de GeoVía queda en la pantalla de inicio y la app abre a pantalla com
 
 ---
 
-## 6. Antes de un piloto con usuarios reales (opcional)
+## 7. Antes de abrir la plataforma al público (opcional)
 
 ```sql
-delete from public.reports where is_demo;  -- elimina los datos de demostración
+delete from public.reports where is_demo;  -- elimina solo los datos de demostración (no los de campo)
 ```
 
 ## Solución de problemas
@@ -103,3 +123,5 @@ delete from public.reports where is_demo;  -- elimina los datos de demostración
 | “Debe confirmar su correo” | Confirm email activo | Desactívelo (paso 1.2) o confirme desde el correo. |
 | No aparece el botón Instalar | Navegador sin soporte o ya instalada | Use el menú del navegador (paso 5). |
 | El mapa no carga | Sin conexión | La app muestra aviso; los mosaicos visitados quedan en caché. |
+| `cargar:reportes` responde “Faltan VITE_SUPABASE_URL…” | No existe `.env.local` | Créelo a partir de `.env.example`. |
+| `cargar:reportes` responde “Request rate limit reached” | Límite de sesiones anónimas por hora | Espere una hora o súbalo en Authentication → Rate Limits. |

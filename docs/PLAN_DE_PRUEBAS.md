@@ -48,6 +48,18 @@ Ambiente: URL de Vercel · Navegador/dispositivo: __________ · Red: __________ 
 | PWA | Celular Android/iPhone | Instalar app (ver guía) | Ícono en pantalla de inicio; abre a pantalla completa | | | |
 | RNF06 | 100 reportes | Abrir Mapa | “100 marcadores cargados en ≤ 5000 ms” | | | |
 
-## 3. Sesiones de usabilidad (submuestra de 12 participantes)
+## 3. Validación con reportes reales de campo
+
+Nueve afectaciones fotografiadas en Cali (comunas 2, 4 y 9) se cargan con `npm run cargar:reportes`. Cada una se envía desde una **sesión anónima distinta**, como lo haría un ciudadano sin cuenta, y recorre el mismo flujo de la app: subida de la foto al bucket privado, validaciones del servidor y registro en la bitácora.
+
+| Verificación | Resultado durante el desarrollo (22/11/2026) | Resultado en producción |
+|---|---|---|
+| Validación local de los 9 registros (`--prueba`) | 9/9 válidos | |
+| Aceptación por `submit_report` (PostgreSQL + PostGIS) | 9/9 aceptados, estado *Recibido*, autor anónimo | |
+| Moderación (Pasar a revisión → Validar) | 7 validados con 2 hitos de revisor cada uno | |
+| Visibilidad en el mapa público tras validar | Correcta | |
+| Fotos visibles en la ficha con URL firmada | Correcta (simulación) | |
+
+## 4. Sesiones de usabilidad (submuestra de 12 participantes)
 
 Tareas sugeridas (alineadas con la Tabla 12 del documento maestro): T1 reportar un daño con foto, T2 encontrar un reporte en el mapa por barrio, T3 consultar el estado con el código, T4 instalar la app. Registrar por participante: completó sin ayuda (sí/no), tiempo, errores y comentario. Meta: ≥ 85 % de tareas completadas sin asistencia.

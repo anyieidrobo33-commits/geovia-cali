@@ -36,17 +36,14 @@ export default function AccountPage() {
         toast('Sesión iniciada');
         navigate(redirect ?? '/', { replace: true });
       } else {
-        // Si hay una sesión anónima, se convierte en cuenta para conservar sus reportes
-        if (isAnonymous) {
-          const { error: err } = await supabase.auth.updateUser({ email, password, data: { display_name: name || null } });
-          if (err) throw err;
-          setInfo('Revise su correo para confirmar la cuenta. Sus reportes anteriores quedarán asociados a ella.');
-        } else {
-          const { data, error: err } = await supabase.auth.signUp({ email, password, options: { data: { display_name: name || null } } });
-          if (err) throw err;
-          if (data.session) { toast('Cuenta creada'); navigate('/', { replace: true }); }
-          else setInfo('Cuenta creada. Revise su correo para confirmarla y luego ingrese.');
-        }
+        // Una sesión anónima no se convierte en cuenta sin verificación de correo;
+        // se cierra y se crea la cuenta. Los reportes previos siguen disponibles
+        // por su código en "Mis reportes" de este dispositivo.
+        if (isAnonymous) await supabase.auth.signOut();
+        const { data, error: err } = await supabase.auth.signUp({ email, password, options: { data: { display_name: name || null } } });
+        if (err) throw err;
+        if (data.session) { await refreshProfile(); toast('Cuenta creada'); navigate('/', { replace: true }); }
+        else setInfo('Cuenta creada. Revise su correo para confirmarla y luego ingrese.');
       }
     } catch (err) {
       setError(friendlyError(err));

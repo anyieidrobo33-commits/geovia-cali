@@ -71,7 +71,7 @@ export default function PanelPage() {
       <div className="page-head">
         <div>
           <h1>Panel de revisión</h1>
-          <p>Moderación de reportes, trazabilidad e indicadores del prototipo.</p>
+          <p>Moderación de reportes, trazabilidad e indicadores de la plataforma.</p>
         </div>
         <div className="row">
           {isAdmin && <Link to="/panel/usuarios" className="btn"><Users size={18} />Usuarios y roles</Link>}

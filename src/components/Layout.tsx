@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { House, LayoutDashboard, ListChecks, LogIn, Map as MapIcon, Plus, Search, Smartphone, User, WifiOff } from 'lucide-react';
 import logoPin from '../assets/logo-pin.png';
@@ -13,6 +13,8 @@ export default function Layout() {
   const [showInstall, setShowInstall] = useState(false);
   const { pathname } = useLocation();
   const fullBleed = pathname === '/mapa';
+  // Cada pantalla nueva empieza arriba
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
   const signedIn = Boolean(user && !isAnonymous);
 
   const onInstall = async () => {
@@ -61,8 +63,9 @@ export default function Layout() {
 
       {!fullBleed && <footer className="footer">
         <div className="container footer-inner">
-          <span>© {new Date().getFullYear()} GeoVía Cali · Prototipo académico TRL5 · Ingeniería de Sistemas, UNAD</span>
+          <span>© {new Date().getFullYear()} GeoVía Cali · Cristian Camilo Alvarado Cardona y Anyie Tatiana Idrobo García · Ingeniería de Sistemas, UNAD</span>
           <span className="row" style={{ gap: 16 }}>
+            <Link to="/ayuda">Ayuda</Link>
             <Link to="/acerca">Acerca y privacidad</Link>
             <a href="https://www.cali.gov.co/infraestructura/" target="_blank" rel="noreferrer">Canales oficiales</a>
           </span>
