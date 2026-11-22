@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import {
   CATEGORIES, TRANSITIONS, canTransition, distanceMeters, isInsideCali, normalizeCode, REPORT_CODE_RE,
-  validateDraft, validatePhotoFile, type ReportDraft, type ReportStatus,
+  validateDraft, validatePhotoFile, checkOnSite, CONDITIONS, type ReportDraft, type ReportStatus,
 } from '../src/lib/domain';
 
 const base: ReportDraft = {
@@ -126,5 +126,33 @@ describe('Código de seguimiento', () => {
     expect(normalizeCode('gvc 2611 7k4qm')).toBe('GVC-2611-7K4QM');
     expect(normalizeCode('26117K4QM')).toBe('GVC-2611-7K4QM');
     expect(normalizeCode(' GVC-2611-7K4QM ')).toBe('GVC-2611-7K4QM');
+  });
+});
+
+describe('Actualizaciones ciudadanas · verificación en el sitio', () => {
+  const dano: [number, number] = [3.488024, -76.525024];
+  it('exige ubicación GPS', () => {
+    expect(checkOnSite(dano, null).ok).toBe(false);
+  });
+  it('acepta estar a menos de 150 m con buena precisión', () => {
+    const r = checkOnSite(dano, { lat: 3.4881, lng: -76.5251, accuracy: 12 });
+    expect(r.ok).toBe(true);
+    expect(r.distance).toBeLessThan(20);
+  });
+  it('rechaza estar lejos del daño', () => {
+    const r = checkOnSite(dano, { lat: 3.4930, lng: -76.5250, accuracy: 10 });
+    expect(r.ok).toBe(false);
+    expect(r.error).toMatch(/150 m/);
+  });
+  it('rechaza un GPS impreciso aunque esté cerca', () => {
+    const r = checkOnSite(dano, { lat: 3.488024, lng: -76.525024, accuracy: 180 });
+    expect(r.ok).toBe(false);
+    expect(r.error).toMatch(/precisión/);
+  });
+  it('los estados observados coinciden con el tipo update_condition de la base de datos', () => {
+    const sql = readFileSync('supabase/migrations/003_actualizaciones_ciudadanas.sql', 'utf8');
+    const m = sql.match(/create type public\.update_condition as enum \(([^)]*)\)/);
+    const codes = [...(m?.[1] ?? '').matchAll(/'(\w+)'/g)].map((x) => x[1]).sort();
+    expect(CONDITIONS.map((c) => c.code).sort()).toEqual(codes);
   });
 });

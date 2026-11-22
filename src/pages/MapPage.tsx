@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MapContainer, Marker, Popup, TileLayer, useMap, Circle } from 'react-leaflet';
-import { Filter, List, LocateFixed, Map as MapIcon, Plus, RefreshCw, X } from 'lucide-react';
-import { fetchReports, type Report } from '../lib/api';
-import { CALI_CENTER, CATEGORIES, STATUSES, categoryMeta, type CategoryCode, type ReportStatus } from '../lib/domain';
+import { Camera, Filter, List, LocateFixed, Map as MapIcon, Plus, RefreshCw, X } from 'lucide-react';
+import { fetchReports, signedPhotoUrls, type Report } from '../lib/api';
+import { CALI_CENTER, CATEGORIES, PUBLIC_STATUSES, STATUSES, categoryMeta, type CategoryCode, type ReportStatus } from '../lib/domain';
 import { categoryPin, TILE_ATTRIBUTION, TILE_URL, userLocationIcon } from '../components/mapIcons';
 import { CategoryIcon, DemoBadge, Spinner, StatusBadge } from '../components/ui';
 import { ReportListItem } from '../components/ReportListItem';
@@ -12,6 +12,13 @@ import { friendlyError } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 
 type Range = 30 | 90 | 0;
+
+/** Foto del reporte en la ventana del marcador (se firma solo al abrirla). */
+function PopupPhoto({ path }: { path: string }) {
+  const [url, setUrl] = useState<string | null>(null);
+  useEffect(() => { signedPhotoUrls([path]).then((u) => setUrl(u[path] ?? null)).catch(() => setUrl(null)); }, [path]);
+  return url ? <img className="popup-photo" src={url} alt="Fotografía del daño" /> : <div className="popup-photo skeleton" />;
+}
 
 function FlyTo({ target }: { target: [number, number] | null }) {
   const map = useMap();
@@ -32,6 +39,7 @@ export default function MapPage() {
   const [sector, setSector] = useState('');
   const [me, setMe] = useState<{ pos: [number, number]; acc: number } | null>(null);
   const [locating, setLocating] = useState(false);
+  const [openId, setOpenId] = useState<string | null>(null);
 
   const load = async () => {
     setError(null);
@@ -93,17 +101,24 @@ export default function MapPage() {
         {filtered.map((r) => (
           <Marker key={r.id} position={[r.lat, r.lng]} icon={categoryPin(r.category_code, r.status)}
             title={`${categoryMeta(r.category_code).name} · ${r.sector ?? r.code}`} keyboard>
-            <Popup autoPanPaddingTopLeft={[12, 78]} autoPanPaddingBottomRight={[12, 24]}>
+            <Popup autoPanPaddingTopLeft={[12, 78]} autoPanPaddingBottomRight={[12, 24]}
+              eventHandlers={{ add: () => setOpenId(r.id), remove: () => setOpenId((o) => (o === r.id ? null : o)) }}>
               <div className="popup-title"><CategoryIcon code={r.category_code} size={26} />{categoryMeta(r.category_code).name}</div>
               <div className="row" style={{ gap: 6 }}>
                 <StatusBadge status={r.status} />
                 {r.is_demo && <DemoBadge />}
               </div>
+              {openId === r.id && r.report_photos?.[0] && <PopupPhoto path={r.report_photos[0].storage_path} />}
               <p className="popup-desc">{r.description}</p>
               <div className="small muted" style={{ marginBottom: 8 }}>
                 {r.sector ? `${r.sector} · ` : ''}{fmtDate(r.created_at)}
               </div>
-              <Link to={`/r/${r.code}`} className="btn btn-sm btn-navy" style={{ color: '#fff' }}>Ver detalle e historial</Link>
+              <div className="row" style={{ gap: 6 }}>
+                <Link to={`/r/${r.code}`} className="btn btn-sm btn-navy" style={{ color: '#fff' }}>Ver detalle</Link>
+                {PUBLIC_STATUSES.includes(r.status) && (
+                  <Link to={`/r/${r.code}/actualizar`} className="btn btn-sm"><Camera size={14} />Actualizar</Link>
+                )}
+              </div>
             </Popup>
           </Marker>
         ))}

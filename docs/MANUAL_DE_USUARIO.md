@@ -1,7 +1,7 @@
 <p align="center"><img src="../public/icons/icon-192.png" width="88" alt="GeoVía Cali"></p>
 
 <h1 align="center">Manual de usuario · GeoVía Cali</h1>
-<p align="center">Versión 1.1 · Noviembre de 2026</p>
+<p align="center">Versión 1.2 · Noviembre de 2026</p>
 
 GeoVía Cali le permite **reportar daños de las vías de Santiago de Cali** (huecos, grietas, hundimientos, tapas de alcantarilla dañadas y más), **verlos en un mapa** y **hacer seguimiento** a cada reporte con un código. No necesita crear una cuenta.
 
@@ -16,6 +16,7 @@ GeoVía Cali le permite **reportar daños de las vías de Santiago de Cali** (hu
 5. [Consultar el mapa](#5-consultar-el-mapa)
 6. [Hacer seguimiento a un reporte](#6-hacer-seguimiento-a-un-reporte)
 7. [Mis reportes y cuenta opcional](#7-mis-reportes-y-cuenta-opcional)
+   - [Comunidad y actualización de reportes](#comunidad-y-actualización-de-reportes)
 8. [Para revisores: moderar reportes](#8-para-revisores-moderar-reportes)
 9. [Para el administrador: usuarios y roles](#9-para-el-administrador-usuarios-y-roles)
 10. [Estados de un reporte](#10-estados-de-un-reporte)
@@ -251,6 +252,37 @@ Los revisores y el administrador **siempre** ingresan con su cuenta.
 </td>
 </tr></table>
 
+### Comunidad y actualización de reportes
+
+<table><tr>
+<td width="40%"><img src="img/18-comunidad.png" alt="Muro de la comunidad"></td>
+<td>
+
+En **Comunidad** (barra inferior) verá un muro con:
+
+- **Nuevos daños publicados**: reportes validados, con foto, barrio y fecha.
+- **Actualizaciones ciudadanas**: personas que pasaron por el lugar e informaron si el daño **sigue igual**, **empeoró**, **mejoró** o **ya lo arreglaron**.
+
+Use los filtros **Todo · Reportes · Actualizaciones**. Cada publicación tiene **Ver detalle** y **Actualizar**.
+</td>
+</tr></table>
+
+<table><tr>
+<td width="40%"><img src="img/19-actualizar.png" alt="Actualizar un reporte en el sitio"></td>
+<td>
+
+**Para actualizar un reporte** debe estar en el lugar del daño:
+
+1. Toque **Actualizar** en Comunidad, en el mapa o en la ficha del reporte.
+2. **Verificar mi ubicación**: la app usa el GPS y muestra a cuántos metros está del daño. Debe estar a **menos de 150 m** y con precisión de **± 100 m o mejor**. Si no, acérquese o busque cielo abierto y toque **Verificar de nuevo**.
+3. **Abrir cámara** y tome la foto con el botón amarillo. **No se pueden usar fotos de la galería**: la foto debe ser del momento. Puede tocar **Tomar otra** si no quedó bien.
+4. Elija cómo está el daño ahora y, si quiere, escriba un comentario corto (hasta 300 caracteres).
+5. Acepte el tratamiento de datos y toque **Publicar actualización**.
+
+Su ubicación exacta **solo se usa para verificar** que está en el sitio y **no se publica**. Puede actualizar cada reporte una vez por hora.
+</td>
+</tr></table>
+
 ---
 
 ## 8. Para revisores: moderar reportes
@@ -341,6 +373,9 @@ La política completa está en la app, en **Acerca y privacidad**.
 | No aparece el botón Instalar | Use el menú del navegador ([sección 2](#2-instalar-la-app-en-el-celular)); si ya está instalada, el botón se oculta |
 | No veo mi reporte en el mapa | Aún no está validado; consulte su estado en Seguimiento |
 | Olvidé mi código | Búsquelo en Mis reportes o en Seguimiento, desde el mismo dispositivo |
+| “Está a X m del daño” al actualizar | Acérquese al punto del daño (menos de 150 m) y verifique de nuevo |
+| “La precisión del GPS es insuficiente” | Salga a cielo abierto, espere unos segundos y verifique de nuevo |
+| “No se concedió permiso para usar la cámara” | Candado junto a la dirección web → Cámara → Permitir; luego **Reintentar** |
 
 Dentro de la app también está el **Centro de ayuda** (enlace al pie de cada página), con preguntas frecuentes.
 

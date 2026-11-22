@@ -1,6 +1,6 @@
 import { ArrowDownToLine, CircleDot, CircleHelp, Footprints, Grid3x3, Layers, LoaderCircle, Signpost, Zap, type LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { categoryMeta, statusMeta } from '../lib/domain';
+import { categoryMeta, conditionMeta, statusMeta } from '../lib/domain';
 
 export const CATEGORY_ICONS: Record<string, LucideIcon> = {
   hueco: CircleDot,
@@ -63,4 +63,9 @@ export function CenterState({ icon, title, children }: { icon: ReactNode; title:
       {children}
     </div>
   );
+}
+
+export function ConditionBadge({ condition }: { condition: string }) {
+  const c = conditionMeta(condition);
+  return <span className={`badge tone-${c.tone}`}><span className="dot" aria-hidden="true" />{c.label}</span>;
 }

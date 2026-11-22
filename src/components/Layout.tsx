@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
-import { House, LayoutDashboard, ListChecks, LogIn, Map as MapIcon, Plus, Search, Smartphone, User, WifiOff } from 'lucide-react';
+import { LayoutDashboard, ListChecks, LogIn, Map as MapIcon, Plus, Search, Smartphone, User, Users, WifiOff } from 'lucide-react';
 import logoPin from '../assets/logo-pin.png';
 import { useAuth } from '../context/AuthContext';
 import { useInstallPrompt, useOnline } from '../hooks/useInstallPrompt';
@@ -33,6 +33,7 @@ export default function Layout() {
           </Link>
           <nav className="nav-desktop" aria-label="Principal">
             <NavLink to="/mapa"><MapIcon size={18} />Mapa</NavLink>
+            <NavLink to="/comunidad"><Users size={18} />Comunidad</NavLink>
             <NavLink to="/reportar"><Plus size={18} />Reportar</NavLink>
             <NavLink to="/seguimiento"><Search size={18} />Seguimiento</NavLink>
             <NavLink to="/mis-reportes"><ListChecks size={18} />Mis reportes</NavLink>
@@ -73,8 +74,8 @@ export default function Layout() {
       </footer>}
 
       <nav className="tabbar" aria-label="Navegación móvil">
-        <NavLink to="/" end><House size={22} />Inicio</NavLink>
         <NavLink to="/mapa"><MapIcon size={22} />Mapa</NavLink>
+        <NavLink to="/comunidad"><Users size={22} />Comunidad</NavLink>
         <NavLink to="/reportar" className="tab-cta"><span className="cta-bubble"><Plus size={26} strokeWidth={2.6} /></span>Reportar</NavLink>
         <NavLink to="/seguimiento"><Search size={22} />Seguimiento</NavLink>
         {isStaff

@@ -160,3 +160,34 @@ export function distanceMeters(a: [number, number], b: [number, number]): number
   const h = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a[0])) * Math.cos(toRad(b[0])) * Math.sin(dLng / 2) ** 2;
   return 2 * R * Math.asin(Math.sqrt(h));
 }
+
+// ---------------------------------------------------------------------
+// Actualizaciones ciudadanas (migración 003)
+// ---------------------------------------------------------------------
+export type UpdateCondition = 'sigue_igual' | 'empeoro' | 'mejoro' | 'reparado';
+
+export const CONDITIONS: { code: UpdateCondition; label: string; hint: string; tone: StatusMeta['tone'] }[] = [
+  { code: 'sigue_igual', label: 'Sigue igual',   hint: 'El daño se mantiene como fue reportado.', tone: 'warning' },
+  { code: 'empeoro',     label: 'Empeoró',       hint: 'El daño creció o es más peligroso.',      tone: 'danger' },
+  { code: 'mejoro',      label: 'Mejoró',        hint: 'Hubo un arreglo parcial o provisional.',  tone: 'info' },
+  { code: 'reparado',    label: 'Ya lo arreglaron', hint: 'La vía está reparada en ese punto.',   tone: 'success' },
+];
+export const conditionMeta = (code: string) => CONDITIONS.find((c) => c.code === code) ?? CONDITIONS[0];
+
+/** Distancia máxima al daño y precisión mínima del GPS para actualizar (igual que en el servidor). */
+export const UPDATE_MAX_DISTANCE_M = 150;
+export const UPDATE_MAX_ACCURACY_M = 100;
+export const UPDATE_COMMENT_MAX = 300;
+
+export interface GpsFix { lat: number; lng: number; accuracy: number; }
+
+/** Verifica que la persona esté en el sitio con un GPS suficientemente preciso. */
+export function checkOnSite(report: [number, number], fix: GpsFix | null): { ok: boolean; distance: number | null; error?: string } {
+  if (!fix) return { ok: false, distance: null, error: 'Active la ubicación GPS para continuar.' };
+  const distance = Math.round(distanceMeters(report, [fix.lat, fix.lng]));
+  if (fix.accuracy > UPDATE_MAX_ACCURACY_M)
+    return { ok: false, distance, error: `La precisión del GPS es de ± ${Math.round(fix.accuracy)} m. Busque cielo abierto e intente de nuevo (se requiere ± ${UPDATE_MAX_ACCURACY_M} m o menos).` };
+  if (distance > UPDATE_MAX_DISTANCE_M)
+    return { ok: false, distance, error: `Está a ${distance} m del daño. Para actualizarlo debe estar a menos de ${UPDATE_MAX_DISTANCE_M} m.` };
+  return { ok: true, distance };
+}

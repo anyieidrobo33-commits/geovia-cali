@@ -1,6 +1,6 @@
 // Capa de servicios: todas las operaciones con la base de datos pasan por aquí.
 import { supabase, PHOTO_BUCKET } from './supabase';
-import type { CategoryCode, ReportStatus, Severity, UserRole } from './domain';
+import type { CategoryCode, ReportStatus, Severity, UpdateCondition, UserRole } from './domain';
 
 export interface Report {
   id: string;
@@ -58,6 +58,7 @@ export interface NearbyReport {
 
 export interface Stats {
   total: number;
+  actualizaciones?: number;
   publicos: number;
   ultimos_7d: number;
   por_estado: Partial<Record<ReportStatus, number>>;
@@ -221,4 +222,60 @@ export function rememberCode(code: string) {
 }
 export function getRememberedCodes(): string[] {
   try { return JSON.parse(localStorage.getItem(LOCAL_CODES_KEY) ?? '[]'); } catch { return []; }
+}
+
+// ---------------------------------------------------------------------
+// Actualizaciones ciudadanas y feed comunitario
+// ---------------------------------------------------------------------
+export interface ReportUpdate {
+  id: string;
+  report_id: string;
+  condition: UpdateCondition;
+  comment: string | null;
+  distance_m: number;
+  photo_path: string;
+  created_at: string;
+}
+
+export async function fetchUpdates(reportId: string): Promise<ReportUpdate[]> {
+  const { data, error } = await supabase.from('report_updates')
+    .select('id, report_id, condition, comment, distance_m, photo_path, created_at')
+    .eq('report_id', reportId).order('created_at', { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as ReportUpdate[];
+}
+
+export async function submitUpdate(p: {
+  reportId: string; condition: UpdateCondition; comment: string;
+  lat: number; lng: number; accuracy: number; photoPath: string; consent: boolean;
+}): Promise<{ id: string; distance_m: number }> {
+  const { data, error } = await supabase.rpc('submit_report_update', {
+    p_report_id: p.reportId, p_condition: p.condition, p_comment: p.comment.trim() || null,
+    p_lat: p.lat, p_lng: p.lng, p_accuracy: p.accuracy, p_photo_path: p.photoPath, p_consent: p.consent,
+  });
+  if (error) throw error;
+  return (Array.isArray(data) ? data[0] : data) as { id: string; distance_m: number };
+}
+
+export interface FeedItem {
+  tipo: 'reporte' | 'actualizacion';
+  fecha: string;
+  report_id: string;
+  code: string;
+  category_code: CategoryCode;
+  sector: string | null;
+  address: string | null;
+  texto: string | null;
+  estado: ReportStatus;
+  condicion: UpdateCondition | null;
+  foto: string | null;
+  n_updates: number;
+  ultima_condicion: UpdateCondition | null;
+  is_demo: boolean;
+}
+
+export async function fetchFeed(limit = 40): Promise<FeedItem[]> {
+  const { data, error } = await supabase.rpc('community_feed', { p_limit: limit });
+  if (error) throw error;
+  return (data ?? []) as FeedItem[];
 }

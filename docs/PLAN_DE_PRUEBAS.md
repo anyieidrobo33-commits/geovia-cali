@@ -4,11 +4,11 @@ Las pruebas combinan tres niveles, tal como lo define la sección 8.4 del docume
 
 | Nivel | Herramienta | Cómo se ejecuta | Resultado esperado |
 |---|---|---|---|
-| Unitarias (frontend) | Vitest — `tests/*.test.ts` | `npm test` (y automáticamente en GitHub Actions) | 27 pruebas aprobadas |
-| Reglas de negocio y seguridad (servidor) | SQL — `supabase/tests/pruebas_seguridad_y_reglas.sql` | SQL Editor de Supabase o GitHub Actions | 17 casos con veredicto APROBADO |
+| Unitarias (frontend) | Vitest — `tests/*.test.ts` | `npm test` (y automáticamente en GitHub Actions) | 32 pruebas aprobadas |
+| Reglas de negocio y seguridad (servidor) | SQL — `supabase/tests/pruebas_seguridad_y_reglas.sql` | SQL Editor de Supabase o GitHub Actions | 22 casos con veredicto APROBADO |
 | Funcionales de extremo a extremo | Manual, en la app publicada y en celular | Tabla de la sección 2 | Diligenciar resultado observado |
 
-> Resultado de la ejecución durante el desarrollo (19/11/2026): **27/27 pruebas unitarias aprobadas** y **17/17 casos SQL aprobados** sobre PostgreSQL 16 + PostGIS 3.4.
+> Resultados: **32/32 pruebas unitarias** y **22/22 casos SQL** aprobados (PostgreSQL 16 + PostGIS 3.4 local). En el Supabase de producción (PostgreSQL 17) se ejecutaron los 17 casos base el 22/11/2026: **17/17 APROBADO**.
 
 ## 1. Trazabilidad requisito → prueba automatizada
 
@@ -24,7 +24,8 @@ Las pruebas combinan tres niveles, tal como lo define la sección 8.4 del docume
 | RF08 | TC08 | Vitest: *Exportación sin datos personales* (5 pruebas) |
 | RF09 | TC09 | SQL: descripción corta, coordenadas fuera de Cali, sin consentimiento; Vitest: *Validación* (8 pruebas) |
 | RF10 | TC10 | SQL: transición no permitida, motivo obligatorio, bitácora con autor/rol/fecha |
-| RNF02 | — | SQL: *Otro ciudadano no ve reportes pendientes ajenos*; EXIF eliminado al recomprimir |
+| RF11 | TC11 | SQL: actualización a > 150 m, GPS impreciso, actualización válida en el feed, límite por hora; Vitest: *verificación en el sitio* |
+| RNF02 | — | SQL: *Otro ciudadano no ve reportes pendientes ajenos*, *La ubicación exacta de quien actualiza no es pública*; EXIF eliminado al recomprimir |
 | RNF04 | — | Vitest: contraste ≥ 4.5:1 de colores de categoría |
 | RNF05 | — | SQL: *La bitácora no puede alterarse* |
 | RNF06 | — | Leyenda del mapa muestra “N marcadores cargados en X ms” |
@@ -45,6 +46,7 @@ Ambiente: URL de Vercel · Navegador/dispositivo: __________ · Red: __________ 
 | TC08 | Revisor | Panel → Exportar CSV | Archivo sin correo ni identificador de usuario; abre bien en Excel | | | |
 | TC09 | Paso Afectación | Descripción de 5 caracteres; ubicación fuera de Cali | Mensajes de validación; no permite avanzar | | | |
 | TC10 | Revisor | Abrir reporte recibido → Pasar a revisión → Validar, con motivo | Historial muestra 2 hitos con rol, fecha y motivo; aparece en mapa público | | | |
+| TC11 | Celular en el sitio de un reporte validado | Comunidad → Actualizar → Verificar ubicación → foto con cámara en vivo → Empeoró → Publicar | La actualización aparece en Comunidad y en la ficha; desde lejos (> 150 m) la app no deja continuar | | | |
 | PWA | Celular Android/iPhone | Instalar app (ver guía) | Ícono en pantalla de inicio; abre a pantalla completa | | | |
 | RNF06 | 100 reportes | Abrir Mapa | “100 marcadores cargados en ≤ 5000 ms” | | | |
 

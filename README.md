@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img alt="Versión" src="https://img.shields.io/badge/versión-1.1.0-003163">
+  <img alt="Versión" src="https://img.shields.io/badge/versión-1.2.0-003163">
   <img alt="TRL" src="https://img.shields.io/badge/madurez-TRL%205-2f7a12">
   <img alt="PWA" src="https://img.shields.io/badge/PWA-instalable-fea600">
   <img alt="Licencia" src="https://img.shields.io/badge/licencia-MIT-lightgrey">
@@ -47,6 +47,8 @@ GeoVía Cali es un proyecto de grado de Ingeniería de Sistemas (UNAD), desarrol
 
 ---
 
+> 🌐 **En producción:** https://geovia-cali.vercel.app
+
 ## ✨ Funcionalidades
 
 ### Para la ciudadanía
@@ -61,6 +63,8 @@ GeoVía Cali es un proyecto de grado de Ingeniería de Sistemas (UNAD), desarrol
 | 🗺️ | **Mapa público** | Marcadores por tipo (color + ícono + forma), filtros por tipo, estado, fecha y barrio, y vista de lista accesible. |
 | 💾 | **Funciona con mala señal** | El borrador se guarda en el dispositivo y la app abre sin conexión. |
 | 📲 | **Instalable** | Ícono en la pantalla de inicio de Android e iPhone, pantalla completa y accesos directos. |
+| 👥 | **Comunidad** | Muro con los últimos daños publicados y las actualizaciones de otros ciudadanos, con foto. |
+| 🔄 | **Actualizar un reporte en el sitio** | Indique si el daño sigue igual, empeoró, mejoró o ya fue reparado. Exige **GPS a ≤ 150 m** del daño (precisión ≤ 100 m) y una **foto con la cámara en vivo**; no admite fotos de galería. La ubicación de quien actualiza no se publica. |
 | ❓ | **Centro de ayuda** | Guía rápida, significado de cada estado y preguntas frecuentes dentro de la app. |
 
 ### Para revisores y administración
@@ -142,6 +146,7 @@ GeoVía Cali es un proyecto de grado de Ingeniería de Sistemas (UNAD), desarrol
 | `report_photos` | Rutas de las fotos en el bucket privado |
 | `status_history` | Bitácora inmutable de estados |
 | `status_transitions` | Matriz de transiciones autorizadas |
+| `report_updates` | Actualizaciones ciudadanas en el sitio (estado observado, comentario, foto, distancia). Ubicación y autor no públicos |
 
 ### Ciclo de vida de un reporte
 
@@ -175,7 +180,8 @@ geovia-cali/
 │   ├── context/          Sesión y notificaciones
 │   └── hooks/            Instalación de la PWA y estado de conexión
 ├── supabase/
-│   ├── migrations/       001 esquema y seguridad · 002 datos de demostración
+│   ├── migrations/       001 esquema y seguridad · 002 demostración (opcional)
+│   │                     003 actualizaciones y comunidad · 004 endurecimiento
 │   ├── seed/reportes_campo/  9 reportes reales de campo (fotos + datos)
 │   └── tests/            Batería SQL de reglas y seguridad
 ├── scripts/              Cargador de reportes de campo
@@ -209,7 +215,9 @@ geovia-cali/
 En **SQL Editor** ejecute, en orden:
 
 1. `supabase/migrations/001_esquema_geovia.sql`: tablas, PostGIS, RLS, funciones, bitácora y bucket.
-2. `supabase/migrations/002_datos_demostracion.sql` (opcional): 28 registros simulados, marcados como *Dato de demostración*.
+2. `supabase/migrations/002_datos_demostracion.sql` (opcional): 28 registros simulados, marcados como *Dato de demostración*. **En producción no se cargó.**
+3. `supabase/migrations/003_actualizaciones_ciudadanas.sql`: actualizaciones en el sitio y muro de la comunidad.
+4. `supabase/migrations/004_endurecimiento.sql`: ajustes del asesor de seguridad.
 
 Luego, en **Authentication → Sign In / Providers**, active **Allow anonymous sign-ins**.
 
@@ -234,17 +242,19 @@ npm run cargar:reportes               # envía los 9 reportes
 
 Quedan en estado **Recibido**, listos para que un revisor los valide desde el panel. El script es idempotente: no duplica reportes si se ejecuta de nuevo.
 
-| # | Tipo | Ubicación | Sector |
-|---|---|---|---|
-| 1 | Desgaste de la capa | Avenida 4 Norte | Vipasa (Comuna 2) |
-| 2 | Tapa o sumidero dañado | Carrera 7 | La Esmeralda (Comuna 4) |
-| 3 | Hueco o bache | Carrera 6 | Porvenir (Comuna 4) |
-| 4 | Desgaste de la capa | Carrera 4B | Porvenir (Comuna 4) |
-| 5 | Hueco o bache | Calle 30 Norte | Santa Mónica Residencial (Comuna 2) |
-| 6 | Hueco o bache | Avenida 6 Norte | El Bosque (Comuna 2) |
-| 7 | Hueco o bache | Calle 50 Norte | La Flora (Comuna 2) |
-| 8 | Señalización vial borrada | Calle 52 Norte | Rincón de La Flora (Comuna 2) |
-| 9 | Tapa o sumidero dañado | Carrera 8A | Barrio Obrero (Comuna 9) |
+Códigos de seguimiento en producción:
+
+| # | Código | Tipo | Ubicación | Sector | Estado |
+|---|---|---|---|---|---|
+| 1 | `GVC-2611-NMY4R` | Desgaste de la capa | Avenida 4 Norte | Vipasa (Comuna 2) | Validado |
+| 2 | `GVC-2611-8VACP` | Tapa o sumidero dañado | Carrera 7 | La Esmeralda (Comuna 4) | Validado |
+| 3 | `GVC-2611-W2AGX` | Hueco o bache | Carrera 6 | Porvenir (Comuna 4) | Validado |
+| 4 | `GVC-2611-HVW79` | Desgaste de la capa | Carrera 4B | Porvenir (Comuna 4) | Recibido |
+| 5 | `GVC-2611-8ESTJ` | Hueco o bache | Calle 30 Norte | Santa Mónica Residencial (Comuna 2) | Recibido |
+| 6 | `GVC-2611-JGFA6` | Hueco o bache | Avenida 6 Norte | El Bosque (Comuna 2) | Recibido |
+| 7 | `GVC-2611-C7VNG` | Hueco o bache | Calle 50 Norte | La Flora (Comuna 2) | Validado |
+| 8 | `GVC-2611-MPXML` | Señalización vial borrada | Calle 52 Norte | Rincón de La Flora (Comuna 2) | Recibido |
+| 9 | `GVC-2611-YUVJE` | Tapa o sumidero dañado | Carrera 8A | Barrio Obrero (Comuna 9) | Recibido |
 
 ### 4. Publicación
 
@@ -267,14 +277,14 @@ Importe el repositorio en Vercel, defina `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANO
 
 | Nivel | Cantidad | Qué verifica |
 |---|---|---|
-| Unitarias (Vitest) | 27 | Validaciones, fotos, matriz de transiciones **sincronizada con el SQL**, catálogo, contraste WCAG ≥ 4.5:1, Haversine, códigos, CSV sin datos personales |
-| Reglas y seguridad (SQL) | 17 | Registro válido, validaciones del servidor, fotos ajenas, permisos por rol, RLS (visitante y otro ciudadano), transiciones, motivo obligatorio, bitácora inmutable, duplicados |
+| Unitarias (Vitest) | 32 | Validaciones, fotos, matriz de transiciones **sincronizada con el SQL**, catálogo, contraste WCAG ≥ 4.5:1, Haversine, códigos, CSV sin datos personales |
+| Reglas y seguridad (SQL) | 22 | Registro válido, validaciones del servidor, fotos ajenas, permisos por rol, RLS (visitante y otro ciudadano), transiciones, motivo obligatorio, bitácora inmutable, duplicados, actualizaciones en el sitio (distancia, precisión GPS, límite, privacidad de la ubicación) |
 | Integración continua | 2 trabajos | GitHub Actions ejecuta ambas baterías en cada cambio, con PostgreSQL + PostGIS reales |
 | Funcionales y usabilidad | TC01–TC10 | En la app publicada y en celulares: **[docs/PLAN_DE_PRUEBAS.md](docs/PLAN_DE_PRUEBAS.md)** |
 
 ```bash
-npm test                                                     # 27 pruebas
-# En Supabase → SQL Editor: supabase/tests/pruebas_seguridad_y_reglas.sql   → 17 APROBADO
+npm test                                                     # 32 pruebas
+# En Supabase → SQL Editor: supabase/tests/pruebas_seguridad_y_reglas.sql   → 22 APROBADO
 ```
 
 ---

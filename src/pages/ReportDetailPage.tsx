@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { MapContainer, Marker, TileLayer } from 'react-leaflet';
-import { ArrowLeft, Copy, ExternalLink, History, ImageOff, Lock, MapPin, RefreshCw, SearchX, X } from 'lucide-react';
+import { ArrowLeft, Camera, Copy, ExternalLink, History, ImageOff, Lock, MapPin, RefreshCw, SearchX, Users, X } from 'lucide-react';
 import {
-  fetchHistory, fetchReportByCode, fetchReportCodeById, signedPhotoUrls, trackByCode,
+  fetchHistory, fetchReportByCode, fetchReportCodeById, fetchUpdates, signedPhotoUrls, trackByCode, type ReportUpdate,
   type HistoryEntry, type PublicTracking, type Report,
 } from '../lib/api';
-import { categoryMeta, SEVERITIES, statusMeta } from '../lib/domain';
-import { fmtCoord, fmtDateTime } from '../lib/format';
+import { categoryMeta, PUBLIC_STATUSES, SEVERITIES, statusMeta } from '../lib/domain';
+import { fmtCoord, fmtDateTime, fmtRelative } from '../lib/format';
 import { friendlyError } from '../lib/supabase';
 import { categoryPin, TILE_ATTRIBUTION, TILE_URL } from '../components/mapIcons';
 import Timeline from '../components/Timeline';
 import ReviewActions from '../components/ReviewActions';
-import { CategoryIcon, CenterState, DemoBadge, Spinner, StatusBadge } from '../components/ui';
+import { CategoryIcon, CenterState, ConditionBadge, DemoBadge, Spinner, StatusBadge } from '../components/ui';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 
@@ -27,6 +27,8 @@ export default function ReportDetailPage() {
   const [dupCode, setDupCode] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [zoom, setZoom] = useState<string | null>(null);
+  const [updates, setUpdates] = useState<ReportUpdate[]>([]);
+  const [updatePhotos, setUpdatePhotos] = useState<Record<string, string>>({});
 
   const load = useCallback(async () => {
     setError(null);
@@ -43,6 +45,9 @@ export default function ReportDetailPage() {
           ]);
           setHistory(h);
           setPhotos(Object.values(urls));
+          const ups = await fetchUpdates(r.id).catch(() => [] as ReportUpdate[]);
+          setUpdates(ups);
+          setUpdatePhotos(await signedPhotoUrls(ups.map((u) => u.photo_path)).catch(() => ({} as Record<string, string>)));
           setDupCode(r.duplicate_of ? await fetchReportCodeById(r.duplicate_of) : null);
         }
       } else {
@@ -164,6 +169,31 @@ export default function ReportDetailPage() {
 
         <div className="stack" style={{ gap: 16 }}>
           {isStaff && report && <ReviewActions report={report} onChanged={load} />}
+          {report && PUBLIC_STATUSES.includes(report.status) && (
+            <section className="card card-pad stack" id="actualizaciones">
+              <div className="card-title"><Users size={20} color="var(--navy)" /><h2 style={{ fontSize: '1.15rem' }}>Actualizaciones ciudadanas</h2></div>
+              <p className="small muted" style={{ margin: 0 }}>¿Está cerca de este daño? Confirme con una foto tomada en el sitio cómo está hoy.</p>
+              <Link to={`/r/${report.code}/actualizar`} className="btn btn-navy"><Camera size={18} />Actualizar este reporte</Link>
+              {updates.length === 0 ? <p className="small muted" style={{ margin: 0 }}>Aún no hay actualizaciones.</p> : (
+                <ul className="stack" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                  {updates.map((u) => (
+                    <li key={u.id} className="row" style={{ alignItems: 'flex-start', flexWrap: 'nowrap', gap: 10 }}>
+                      {updatePhotos[u.photo_path]
+                        ? <button className="btn-ghost" style={{ padding: 0, border: 0, background: 'none', cursor: 'zoom-in' }} onClick={() => setZoom(updatePhotos[u.photo_path])} aria-label="Ampliar foto de la actualización">
+                            <img src={updatePhotos[u.photo_path]} alt="Foto de la actualización" className="thumb" style={{ width: 64, height: 64 }} />
+                          </button>
+                        : <span className="thumb" />}
+                      <div style={{ minWidth: 0 }}>
+                        <ConditionBadge condition={u.condition} />
+                        <div className="small muted">{fmtRelative(u.created_at)} · foto tomada a {Math.round(u.distance_m)} m</div>
+                        {u.comment && <p className="small" style={{ margin: '4px 0 0' }}>{u.comment}</p>}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          )}
           <section className="card card-pad">
             <div className="card-title"><History size={20} color="var(--navy)" /><h2 style={{ fontSize: '1.15rem' }}>Historial de estados</h2></div>
             <Timeline entries={history} />

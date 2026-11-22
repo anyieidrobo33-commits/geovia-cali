@@ -39,6 +39,8 @@ begin
 
     v_path := v_ciudadano::text || '/prueba/foto-1.jpg';
     insert into storage.objects (bucket_id, name, owner) values ('evidencias', v_path, v_ciudadano);
+    insert into storage.objects (bucket_id, name, owner) values ('evidencias', v_otro::text || '/act/foto-1.jpg', v_otro),
+                                                               ('evidencias', v_otro::text || '/act/foto-2.jpg', v_otro);
 
     -- === Actuar como ciudadano =========================================
     perform set_config('request.jwt.claims', json_build_object('sub', v_ciudadano, 'role', 'authenticated')::text, true);
@@ -183,6 +185,47 @@ begin
     select count(*) into v_n from public.reports where id = v_report;
     v_res := v_res || array[['TC03', 'Reporte validado aparece en la consulta pública', '1 fila visible',
                              v_n || ' fila visible', case when v_n = 1 then 'APROBADO' else 'FALLIDO' end]];
+
+    -- === Actualizaciones ciudadanas (migración 003) =======================
+    perform set_config('request.jwt.claims', json_build_object('sub', v_otro, 'role', 'authenticated')::text, true);
+    perform set_config('role', 'authenticated', true);
+
+    begin
+      perform public.submit_report_update(v_report, 'sigue_igual', null, 3.4560, -76.5320, 10, v_otro::text || '/act/foto-1.jpg', true);
+      v_res := v_res || array[['TC11', 'Rechazar actualización a más de 150 m del daño', 'Error de distancia', 'Aceptado', 'FALLIDO']];
+    exception when others then
+      v_res := v_res || array[['TC11', 'Rechazar actualización a más de 150 m del daño', 'Error de distancia', sqlerrm, 'APROBADO']];
+    end;
+    begin
+      perform public.submit_report_update(v_report, 'sigue_igual', null, 3.4517, -76.5320, 250, v_otro::text || '/act/foto-1.jpg', true);
+      v_res := v_res || array[['TC11', 'Rechazar actualización con GPS impreciso (> 100 m)', 'Error de precisión', 'Aceptado', 'FALLIDO']];
+    exception when others then
+      v_res := v_res || array[['TC11', 'Rechazar actualización con GPS impreciso (> 100 m)', 'Error de precisión', sqlerrm, 'APROBADO']];
+    end;
+    begin
+      perform public.submit_report_update(v_report, 'empeoro', 'El hueco creció con la lluvia.', 3.45175, -76.5320, 12, v_otro::text || '/act/foto-1.jpg', true);
+      select count(*) into v_n from jsonb_array_elements(public.community_feed(50)) e
+       where e ->> 'tipo' = 'actualizacion' and e ->> 'code' = v_code;
+      v_res := v_res || array[['TC11', 'Actualización en el sitio con foto queda en el feed comunitario', '1 actualización en el feed',
+                               v_n || ' actualización en el feed', case when v_n = 1 then 'APROBADO' else 'FALLIDO' end]];
+    exception when others then
+      v_res := v_res || array[['TC11', 'Actualización en el sitio con foto queda en el feed comunitario', '1 actualización en el feed', sqlerrm, 'FALLIDO']];
+    end;
+    begin
+      perform public.submit_report_update(v_report, 'reparado', null, 3.45175, -76.5320, 12, v_otro::text || '/act/foto-2.jpg', true);
+      v_res := v_res || array[['TC11', 'Limitar a una actualización por reporte por hora', 'Error de límite', 'Aceptado', 'FALLIDO']];
+    exception when others then
+      v_res := v_res || array[['TC11', 'Limitar a una actualización por reporte por hora', 'Error de límite', sqlerrm, 'APROBADO']];
+    end;
+
+    perform set_config('request.jwt.claims', '{"role":"anon"}', true);
+    perform set_config('role', 'anon', true);
+    begin
+      execute 'select lat from public.report_updates limit 1';
+      v_res := v_res || array[['RNF02', 'La ubicación exacta de quien actualiza no es pública', 'Acceso denegado', 'Visible', 'FALLIDO']];
+    exception when others then
+      v_res := v_res || array[['RNF02', 'La ubicación exacta de quien actualiza no es pública', 'Acceso denegado', sqlerrm, 'APROBADO']];
+    end;
 
     raise exception 'GEOVIA_ROLLBACK';
   exception when others then

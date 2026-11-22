@@ -1,7 +1,7 @@
 {
   "name": "geovia-cali",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "GeoVía Cali — prototipo web georreferenciado (PWA) para el reporte y seguimiento de afectaciones de la malla vial de Santiago de Cali.",
   "author": "Cristian Camilo Alvarado Cardona, Anyie Tatiana Idrobo García",
   "contributors": [

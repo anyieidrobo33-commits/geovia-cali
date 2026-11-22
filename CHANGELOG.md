@@ -2,6 +2,22 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y versionado semántico.
 
+## [1.2.0] — 2026-11-22
+
+### Agregado
+- **Comunidad** (`/comunidad`): muro con los últimos daños publicados y las actualizaciones ciudadanas, con foto.
+- **Actualizar reporte** (`/r/:código/actualizar`): cualquier persona, con o sin cuenta, informa si el daño sigue igual, empeoró, mejoró o ya fue reparado. Solo se acepta:
+  - ubicación GPS a ≤ 150 m del daño con precisión ≤ 100 m (verificada en la app y en el servidor);
+  - foto tomada en el momento con la **cámara en vivo**, sin opción de galería.
+- La ubicación exacta y la identidad de quien actualiza no se publican (permisos por columna).
+- Foto del daño y botón «Actualizar» en la ventana de cada marcador del mapa.
+- Migración 003 (actualizaciones y muro) y 004 (endurecimiento según el asesor de seguridad de Supabase).
+- 5 pruebas SQL nuevas (TC11 y privacidad) y 5 pruebas unitarias nuevas.
+
+### Cambiado
+- Barra inferior del celular: Mapa · Comunidad · Reportar · Seguimiento · Mis reportes.
+- Plataforma en producción: Supabase (proyecto `geovia-cali`) y Vercel (`geovia-cali.vercel.app`), con 4 de los 9 reportes de campo publicados.
+
 ## [1.1.0] — 2026-11-22
 
 ### Agregado
